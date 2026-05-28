@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hannanel Pro — Dashboard de Monitoreo en Vivo de Noticias sobre Gaby Molina. Análisis en tiempo real por categoría: Política, Mediática, Cultura, Nota Rosa, Educación.">
+  <title>Hannanel Pro · Monitoreo en Vivo — Gaby Molina</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>📡</text></svg>">
+</head>
+<body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent">
+      <div class="modal-header">
+        <h3 id="modalTitle">Detalle de Noticia</h3>
+        <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="app-layout">
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">H</div>
+        <div class="sidebar-brand">
+          <h1>Hannanel Pro</h1>
+          <span>Media Intelligence</span>
+        </div>
+      </div>
+
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>Monitoreo Activo</span>
+        <span id="liveTimer" style="margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px;">00:00:00</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Principal</div>
+          <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item" data-view="live" onclick="switchView('live')">
+            <span class="icon">📡</span>
+            <span>Monitor en Vivo</span>
+            <span class="badge" id="liveCount">12</span>
+          </div>
+          <div class="nav-item" data-view="news" onclick="switchView('news')">
+            <span class="icon">📰</span>
+            <span>Todas las Noticias</span>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Categorías</div>
+          <div class="nav-item" data-category="politica" onclick="filterByCategory('politica')">
+            <span class="icon">🏛️</span>
+            <span>Política</span>
+            <span class="badge" id="countPolitica" style="background: var(--accent-primary);">0</span>
+          </div>
+          <div class="nav-item" data-category="mediatica" onclick="filterByCategory('mediatica')">
+            <span class="icon">📺</span>
+            <span>Mediática</span>
+            <span class="badge" id="countMediatica" style="background: var(--accent-secondary);">0</span>
+          </div>
+          <div class="nav-item" data-category="cultura" onclick="filterByCategory('cultura')">
+            <span class="icon">🎭</span>
+            <span>Cultura</span>
+            <span class="badge" id="countCultura" style="background: var(--accent-tertiary);">0</span>
+          </div>
+          <div class="nav-item" data-category="nota-rosa" onclick="filterByCategory('nota-rosa')">
+            <span class="icon">💝</span>
+            <span>Nota Rosa</span>
+            <span class="badge" id="countNotaRosa" style="background: var(--accent-pink);">0</span>
+          </div>
+          <div class="nav-item" data-category="educacion" onclick="filterByCategory('educacion')">
+            <span class="icon">📚</span>
+            <span>Educación</span>
+            <span class="badge success" id="countEducacion">0</span>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Análisis</div>
+          <div class="nav-item" data-view="sentiment" onclick="switchView('sentiment')">
+            <span class="icon">📈</span>
+            <span>Sentimiento</span>
+          </div>
+          <div class="nav-item" data-view="sources" onclick="switchView('sources')">
+            <span class="icon">🌐</span>
+            <span>Fuentes</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="profile">
+          <div class="profile-avatar">GM</div>
+          <div class="profile-info">
+            <div class="name">Gaby Molina</div>
+            <div class="role">Sujeto de Monitoreo</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════ MAIN CONTENT ═══════ -->
+    <main class="main-content">
+      <!-- ── Header ── -->
+      <header class="header">
+        <div class="header-left">
+          <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+          <div class="header-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Buscar noticias, fuentes, temas..." oninput="handleSearch(this.value)">
+            <span class="search-shortcut">⌘K</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="live-tag">
+            <span class="dot"></span>
+            EN VIVO
+          </div>
+          <button class="header-btn" id="refreshBtn" onclick="refreshData()" title="Actualizar datos">🔄</button>
+          <button class="header-btn" onclick="toggleNotifications()" title="Notificaciones">
+            🔔
+            <span class="notification-dot"></span>
+          </button>
+          <button class="header-btn" title="Configuración">⚙️</button>
+        </div>
+      </header>
+
+      <!-- ── Page Content ── -->
+      <div class="page-content" id="pageContent">
+
+        <!-- ══ Ticker Bar ══ -->
+        <div class="ticker-bar">
+          <div class="ticker-content" id="tickerContent"></div>
+        </div>
+
+        <!-- ══ Stats Grid ══ -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card purple">
+            <div class="stat-card-header">
+              <div class="stat-icon">📰</div>
+              <div class="stat-trend up" id="trendTotal">↑ +12%</div>
+            </div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Menciones Totales (24h)</div>
+            <div class="stat-sparkline">
+              <div class="mini-chart" id="sparkTotal"></div>
+            </div>
+          </div>
+          <div class="stat-card cyan">
+            <div class="stat-card-header">
+              <div class="stat-icon">📊</div>
+              <div class="stat-trend up" id="trendPositive">↑ +8%</div>
+            </div>
+            <div class="stat-value" id="statPositive">0</div>
+            <div class="stat-label">Sentimiento Positivo</div>
+            <div class="stat-sparkline">
+              <div class="mini-chart chart-cyan" id="sparkPositive"></div>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-card-header">
+              <div class="stat-icon">🌐</div>
+              <div class="stat-trend up" id="trendSources">↑ +5%</div>
+            </div>
+            <div class="stat-value" id="statSources">0</div>
+            <div class="stat-label">Fuentes Activas</div>
+            <div class="stat-sparkline">
+              <div class="mini-chart chart-green" id="sparkSources"></div>
+            </div>
+          </div>
+          <div class="stat-card pink">
+            <div class="stat-card-header">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-trend up" id="trendEngagement">↑ +23%</div>
+            </div>
+            <div class="stat-value" id="statEngagement">0</div>
+            <div class="stat-label">Engagement Score</div>
+            <div class="stat-sparkline">
+              <div class="mini-chart chart-pink" id="sparkEngagement"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Monitor Section ══ -->
+        <div class="monitor-section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">🛰️ Monitoreo <span class="highlight">en Tiempo Real</span></div>
+              <div class="section-subtitle">Rastreo activo en plataformas principales</div>
+            </div>
+          </div>
+          <div class="monitor-grid" id="monitorGrid">
+            <!-- Generated by JS -->
+          </div>
+        </div>
+
+        <!-- ══ Category Coverage ══ -->
+        <div class="section-header">
+          <div>
+            <div class="section-title">📂 Cobertura por <span class="highlight">Categoría</span></div>
+            <div class="section-subtitle">Distribución de noticias sobre Gaby Molina</div>
+          </div>
+        </div>
+        <div class="coverage-grid" id="coverageGrid">
+          <div class="coverage-item">
+            <div class="coverage-value" id="covPolitica">0</div>
+            <div class="coverage-label">Política</div>
+          </div>
+          <div class="coverage-item">
+            <div class="coverage-value" id="covMediatica">0</div>
+            <div class="coverage-label">Mediática</div>
+          </div>
+          <div class="coverage-item">
+            <div class="coverage-value" id="covCultura">0</div>
+            <div class="coverage-label">Cultura</div>
+          </div>
+          <div class="coverage-item">
+            <div class="coverage-value" id="covNotaRosa">0</div>
+            <div class="coverage-label">Nota Rosa</div>
+          </div>
+          <div class="coverage-item">
+            <div class="coverage-value" id="covEducacion">0</div>
+            <div class="coverage-label">Educación</div>
+          </div>
+        </div>
+
+        <!-- ══ Category Tabs + News Feed ══ -->
+        <div style="margin-top: 28px;">
+          <div class="section-header">
+            <div>
+              <div class="section-title">📰 Feed de <span class="highlight">Noticias</span></div>
+              <div class="section-subtitle">Últimas noticias sobre Gaby Molina clasificadas por categoría</div>
+            </div>
+          </div>
+
+          <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab active" data-filter="all" onclick="filterNews('all')">
+              🔥 Todas
+              <span class="tab-count" id="tabAll">0</span>
+            </button>
+            <button class="category-tab" data-filter="politica" onclick="filterNews('politica')">
+              🏛️ Política
+              <span class="tab-count" id="tabPolitica">0</span>
+            </button>
+            <button class="category-tab" data-filter="mediatica" onclick="filterNews('mediatica')">
+              📺 Mediática
+              <span class="tab-count" id="tabMediatica">0</span>
+            </button>
+            <button class="category-tab" data-filter="cultura" onclick="filterNews('cultura')">
+              🎭 Cultura
+              <span class="tab-count" id="tabCultura">0</span>
+            </button>
+            <button class="category-tab" data-filter="nota-rosa" onclick="filterNews('nota-rosa')">
+              💝 Nota Rosa
+              <span class="tab-count" id="tabNotaRosa">0</span>
+            </button>
+            <button class="category-tab" data-filter="educacion" onclick="filterNews('educacion')">
+              📚 Educación
+              <span class="tab-count" id="tabEducacion">0</span>
+            </button>
+          </div>
+
+          <!-- ══ Date Filter Bar ══ -->
+          <div class="date-filter-bar" id="dateFilterBar">
+            <div class="date-filter-left">
+              <span class="date-filter-label">📅 Período:</span>
+              <div class="date-filter-buttons">
+                <button class="date-btn active" data-range="all" onclick="filterByDate('all')">Todo</button>
+                <button class="date-btn" data-range="today" onclick="filterByDate('today')">Hoy</button>
+                <button class="date-btn" data-range="yesterday" onclick="filterByDate('yesterday')">Ayer</button>
+                <button class="date-btn" data-range="week" onclick="filterByDate('week')">7 días</button>
+                <button class="date-btn" data-range="month" onclick="filterByDate('month')">30 días</button>
+              </div>
+            </div>
+            <div class="date-filter-right">
+              <div class="date-custom">
+                <input type="date" id="dateFrom" onchange="filterByCustomDate()" title="Desde">
+                <span class="date-separator">→</span>
+                <input type="date" id="dateTo" onchange="filterByCustomDate()" title="Hasta">
+              </div>
+              <div class="last-updated" id="lastUpdated">
+                <span class="live-dot" style="width:6px;height:6px;"></span>
+                Última actualización: --:--
+              </div>
+            </div>
+          </div>
+
+
+          <div class="dashboard-grid">
+            <!-- News Feed -->
+            <div class="news-feed" id="newsFeed">
+              <!-- Generated by JS -->
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+              <!-- Live Activity -->
+              <div class="panel-card">
+                <div class="panel-card-header">
+                  <div class="panel-card-title">
+                    <span class="live-dot"></span>
+                    Actividad en Vivo
+                  </div>
+                  <span style="font-size: 12px; color: var(--text-muted);" id="activityCount">0 eventos</span>
+                </div>
+                <div class="panel-card-body" id="activityFeed">
+                  <!-- Generated by JS -->
+                </div>
+              </div>
+
+              <!-- Trending Topics -->
+              <div class="panel-card">
+                <div class="panel-card-header">
+                  <div class="panel-card-title">🔥 Temas Tendencia</div>
+                </div>
+                <div class="panel-card-body" id="trendingTopics">
+                  <!-- Generated by JS -->
+                </div>
+              </div>
+
+              <!-- Sentiment Analysis -->
+              <div class="panel-card">
+                <div class="panel-card-header">
+                  <div class="panel-card-title">📊 Análisis de Sentimiento</div>
+                </div>
+                <div class="sentiment-gauge" id="sentimentGauge">
+                  <div class="gauge-container">
+                    <div class="gauge-bar-container">
+                      <span class="gauge-label">Positivo</span>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill positive" id="gaugePositive" style="width: 0%"></div>
+                      </div>
+                      <span class="gauge-value sentiment-positive" id="gaugePositiveVal">0%</span>
+                    </div>
+                    <div class="gauge-bar-container">
+                      <span class="gauge-label">Neutral</span>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill neutral" id="gaugeNeutral" style="width: 0%"></div>
+                      </div>
+                      <span class="gauge-value" id="gaugeNeutralVal">0%</span>
+                    </div>
+                    <div class="gauge-bar-container">
+                      <span class="gauge-label">Negativo</span>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill negative" id="gaugeNegative" style="width: 0%"></div>
+                      </div>
+                      <span class="gauge-value sentiment-negative" id="gaugeNegativeVal">0%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
