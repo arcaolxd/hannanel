@@ -9,7 +9,12 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const CONFIG = {
-  // Queries de búsqueda para Google News RSS
+  // ══ CLOUDFLARE WORKER (Backend real) ══
+  // Después de desplegar el Worker, pega tu URL aquí:
+  // Ejemplo: 'https://hannanel-news-worker.TU-USUARIO.workers.dev'
+  workerUrl: null,
+
+  // Queries de búsqueda para Google News RSS (fallback si no hay Worker)
   searchQueries: [
     '"Gaby Molina"',
     '"Gabriela Molina Aguilar"',
@@ -40,8 +45,8 @@ const CONFIG = {
 
 const CATEGORIES = {
   politica: {
-    label: 'Política',
-    icon: '🏛️',
+    label: 'Alfil / Política',
+    icon: '♝',
     badge: 'badge-politica',
     color: '#818cf8',
     dotClass: 'political',
@@ -58,8 +63,8 @@ const CATEGORIES = {
     ]
   },
   educacion: {
-    label: 'Educación',
-    icon: '📚',
+    label: 'Peón / Educación',
+    icon: '♙',
     badge: 'badge-educacion',
     color: '#10b981',
     dotClass: 'education',
@@ -78,8 +83,8 @@ const CATEGORIES = {
     ]
   },
   mediatica: {
-    label: 'Mediática',
-    icon: '📺',
+    label: 'Caballo / Mediática',
+    icon: '♞',
     badge: 'badge-mediatica',
     color: '#06b6d4',
     dotClass: 'media',
@@ -96,8 +101,8 @@ const CATEGORIES = {
     ]
   },
   cultura: {
-    label: 'Cultura',
-    icon: '🎭',
+    label: 'Torre / Cultura',
+    icon: '♜',
     badge: 'badge-cultura',
     color: '#8b5cf6',
     dotClass: 'culture',
@@ -113,8 +118,8 @@ const CATEGORIES = {
     ]
   },
   'nota-rosa': {
-    label: 'Nota Rosa',
-    icon: '💝',
+    label: 'Reina / Nota Rosa',
+    icon: '♛',
     badge: 'badge-nota-rosa',
     color: '#ec4899',
     dotClass: 'pink',
@@ -157,6 +162,84 @@ const SENTIMENT_KEYWORDS = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// SEMÁFORO TÁCTICO — Threat Level Classification System
+// ═══════════════════════════════════════════════════════════════════════════
+
+const THREAT_LEVELS = {
+  green: {
+    level: 0,
+    name: 'Verde',
+    codename: 'APERTURA',
+    protocolName: 'Protocolo de Apertura',
+    icon: '♟',
+    label: '♟ OPERACIÓN NORMAL',
+    codeLabel: 'CÓDIGO VERDE',
+    codeClass: 'code-green',
+    levelClass: 'level-green',
+    triggers: ['boletín', 'beca', 'evento', 'entrega', 'inauguración', 'programa', 'apoyo',
+               'beneficio', 'reconocimiento', 'mejora', 'avance', 'logro', 'capacitación',
+               'ceremonia', 'beca rita cetina', 'beca gertrudis', 'nueva escuela mexicana'],
+    triggerLabels: ['Boletines', 'Becas', 'Eventos', 'Inauguraciones', 'Programas sociales'],
+    actions: [
+      { icon: '📢', text: 'Difundir información positiva en canales oficiales', priority: 'Normal', priorityClass: 'priority-normal' },
+      { icon: '📱', text: 'Amplificar cobertura en redes sociales', priority: 'Normal', priorityClass: 'priority-normal' },
+      { icon: '📊', text: 'Mantener posicionamiento estratégico', priority: 'Normal', priorityClass: 'priority-normal' }
+    ]
+  },
+  yellow: {
+    level: 1,
+    name: 'Amarillo',
+    codename: 'DEFENSA SICILIANA',
+    protocolName: 'Protocolo Defensa Siciliana',
+    icon: '♞',
+    label: '♞ ALERTA PREVENTIVA',
+    codeLabel: 'CÓDIGO AMARILLO',
+    codeClass: 'code-yellow',
+    levelClass: 'level-yellow',
+    triggers: ['manifestación', 'protesta', 'paro', 'sindicato', 'snte', 'demanda',
+               'exigencia', 'plantón', 'marcha', 'bloqueo', 'inconformidad', 'huelga',
+               'toma de instalaciones', 'cierre de vialidad', 'paro laboral',
+               'conflicto laboral', 'queja magisterial', 'rechazo', 'exigen'],
+    triggerLabels: ['Manifestaciones', 'Demandas sindicales', 'Paros', 'Plantones', 'Bloqueos'],
+    actions: [
+      { icon: '🛡️', text: 'Activar monitoreo intensificado cada 30 minutos', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📝', text: 'Preparar comunicado preventivo / postura institucional', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📞', text: 'Contactar líderes sindicales y mediadores', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📊', text: 'Evaluar impacto mediático y dimensionar alcance', priority: 'Media', priorityClass: 'priority-normal' },
+      { icon: '🗂️', text: 'Documentar cronología del evento para respaldo', priority: 'Media', priorityClass: 'priority-normal' }
+    ]
+  },
+  red: {
+    level: 2,
+    name: 'Rojo',
+    codename: 'GAMBITO DE REY',
+    protocolName: 'Protocolo Gambito de Rey',
+    icon: '♚',
+    label: '♚ CRISIS ACTIVA',
+    codeLabel: 'CÓDIGO ROJO',
+    codeClass: 'code-red',
+    levelClass: 'level-red',
+    triggers: ['fallecimiento', 'muerte', 'asesinato', 'atentado', 'violencia', 'balacera',
+               'secuestro', 'acusación', 'denuncia penal', 'agresión', 'crisis',
+               'emergencia', 'homicidio', 'víctima', 'herido', 'amenaza de muerte',
+               'muerto', 'matan', 'atacan', 'agreden', 'balearon', 'dispararon',
+               'arma de fuego', 'ejecutado', 'masacre', 'emboscada', 'levantón',
+               'desaparecido', 'desaparición', 'crisis escolar', 'derrumbe',
+               'incendio escuela', 'intoxicación', 'abuso', 'violación',
+               'operativo', 'fuerzas armadas', 'guardia nacional', 'crimen organizado'],
+    triggerLabels: ['Fallecimientos', 'Violencia', 'Acusaciones', 'Crisis escolares', 'Atentados'],
+    actions: [
+      { icon: '🚨', text: 'COMUNICADO OFICIAL URGENTE — Redactar y publicar en <30 min', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '🏛️', text: 'Activar gabinete de crisis con Secretaria y equipo jurídico', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '📡', text: 'Contacto inmediato con medios clave de Michoacán', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '🎯', text: 'Posicionamiento inmediato en redes sociales oficiales', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '🛡️', text: 'Contención de daños — Monitorear réplicas y narrativa', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📋', text: 'Informe ejecutivo a gobernadora en máximo 1 hora', priority: 'Alta', priorityClass: 'priority-high' }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -179,7 +262,12 @@ const state = {
   isLoading: false,
   stats: { total: 0, positive: 0, sources: 0, engagement: 0 },
   sentiment: { positive: 0, neutral: 0, negative: 0 },
-  categoryCounts: { politica: 0, mediatica: 0, cultura: 0, 'nota-rosa': 0, educacion: 0 }
+  categoryCounts: { politica: 0, mediatica: 0, cultura: 0, 'nota-rosa': 0, educacion: 0 },
+  // Semáforo Táctico
+  currentThreatLevel: 'green',
+  detectedThreats: [],       // News items that triggered escalation
+  matchedKeywords: new Set(), // Keywords that were matched
+  lastSemaforoScan: null
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -474,66 +562,111 @@ async function tryFetchLiveNews() {
   if (state.isLoading) return;
   state.isLoading = true;
 
-  let allRawItems = [];
+  let newItems = [];
   let successCount = 0;
 
   try {
-    const promises = CONFIG.searchQueries.map(async (query) => {
-      let items = await fetchGoogleNewsRSS(query);
-      if (items.length === 0) {
-        items = await fetchViaCorsproxy(query);
+    if (CONFIG.workerUrl) {
+      // 1. BACKEND REAL: Llamada al Cloudflare Worker
+      const response = await fetch(`${CONFIG.workerUrl}/api/news`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'ok' && data.articles) {
+          successCount = data.queriesSucceeded || 1;
+          for (const raw of data.articles) {
+            const key = raw.link || raw.title;
+            if (state.seenUrls.has(key)) continue;
+            
+            state.seenUrls.add(key);
+            state.newsIdCounter++;
+
+            const category = classifyCategory(raw.title, raw.description);
+            const sentiment = analyzeSentiment(raw.title, raw.description);
+            const sourceInfo = extractSourceFromUrl(raw.link);
+            const sourceName = raw.source || sourceInfo.name;
+
+            newItems.push({
+              id: state.newsIdCounter,
+              category,
+              title: raw.title,
+              excerpt: raw.description || 'Sin descripción disponible.',
+              source: {
+                name: sourceName,
+                icon: sourceName.substring(0, 2).toUpperCase(),
+                domain: sourceInfo.domain,
+                isMichoacan: sourceInfo.isMichoacan
+              },
+              sentiment,
+              timestamp: new Date(raw.timestamp),
+              link: raw.link,
+              thumbnail: null,
+              isBreaking: (Date.now() - raw.timestamp) < 3600000,
+              isNew: true,
+              isReal: true,
+              engagement: randomInt(100, 15000),
+              shares: randomInt(10, 5000),
+              comments: randomInt(5, 800)
+            });
+          }
+        }
       }
-      if (items.length > 0) successCount++;
-      return items;
-    });
+    } else {
+      // 2. FALLBACK: Proxies CORS (Lento y propenso a fallos)
+      let allRawItems = [];
+      const promises = CONFIG.searchQueries.map(async (query) => {
+        let items = await fetchGoogleNewsRSS(query);
+        if (items.length === 0) {
+          items = await fetchViaCorsproxy(query);
+        }
+        if (items.length > 0) successCount++;
+        return items;
+      });
 
-    const results = await Promise.allSettled(promises);
+      const results = await Promise.allSettled(promises);
+      results.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          allRawItems.push(...result.value);
+        }
+      });
 
-    results.forEach(result => {
-      if (result.status === 'fulfilled' && result.value) {
-        allRawItems.push(...result.value);
+      for (const raw of allRawItems) {
+        const key = raw.link || raw.title;
+        if (state.seenUrls.has(key)) continue;
+        if (!raw.title || raw.title.length < 10) continue;
+
+        state.seenUrls.add(key);
+        state.newsIdCounter++;
+
+        const category = classifyCategory(raw.title, raw.description);
+        const sentiment = analyzeSentiment(raw.title, raw.description);
+        const sourceInfo = extractSourceFromUrl(raw.link);
+
+        newItems.push({
+          id: state.newsIdCounter,
+          category,
+          title: raw.title,
+          excerpt: raw.description || 'Sin descripción disponible.',
+          source: {
+            name: raw.source || sourceInfo.name,
+            icon: (raw.source || sourceInfo.name).substring(0, 2).toUpperCase(),
+            domain: sourceInfo.domain,
+            isMichoacan: sourceInfo.isMichoacan
+          },
+          sentiment,
+          timestamp: isNaN(raw.pubDate?.getTime()) ? new Date() : raw.pubDate,
+          link: raw.link,
+          thumbnail: raw.thumbnail,
+          isBreaking: (Date.now() - (raw.pubDate?.getTime() || 0)) < 3600000,
+          isNew: true,
+          isReal: true,
+          engagement: randomInt(100, 15000),
+          shares: randomInt(10, 5000),
+          comments: randomInt(5, 800)
+        });
       }
-    });
-  } catch {
-    // Silently ignore all network errors
-  }
-
-  // Deduplicate by URL and title
-  const newItems = [];
-  for (const raw of allRawItems) {
-    const key = raw.link || raw.title;
-    if (state.seenUrls.has(key)) continue;
-    if (!raw.title || raw.title.length < 10) continue;
-
-    state.seenUrls.add(key);
-    state.newsIdCounter++;
-
-    const category = classifyCategory(raw.title, raw.description);
-    const sentiment = analyzeSentiment(raw.title, raw.description);
-    const sourceInfo = extractSourceFromUrl(raw.link);
-
-    newItems.push({
-      id: state.newsIdCounter,
-      category,
-      title: raw.title,
-      excerpt: raw.description || 'Sin descripción disponible.',
-      source: {
-        name: raw.source || sourceInfo.name,
-        icon: (raw.source || sourceInfo.name).substring(0, 2).toUpperCase(),
-        domain: sourceInfo.domain,
-        isMichoacan: sourceInfo.isMichoacan
-      },
-      sentiment,
-      timestamp: isNaN(raw.pubDate?.getTime()) ? new Date() : raw.pubDate,
-      link: raw.link,
-      thumbnail: raw.thumbnail,
-      isBreaking: (Date.now() - (raw.pubDate?.getTime() || 0)) < 3600000,
-      isNew: true,
-      isReal: true,
-      engagement: randomInt(100, 15000),
-      shares: randomInt(10, 5000),
-      comments: randomInt(5, 800)
-    });
+    }
+  } catch (err) {
+    console.warn("Fetch error:", err);
   }
 
   if (newItems.length > 0) {
@@ -814,6 +947,214 @@ function updatePlatformMetrics() {
   PLATFORMS[3].metrics = { Menciones: randomInt(2, 15), Segmentos: randomInt(1, 8), Oyentes: (randomInt(10, 200) / 10).toFixed(1) + 'K' };
   PLATFORMS[4].metrics = { Publicaciones: randomInt(3, 25), Comunicados: randomInt(1, 10), Alcance: (randomInt(20, 150) / 10).toFixed(1) + 'K' };
   PLATFORMS[5].metrics = { Artículos: randomInt(5, 30), Columnas: randomInt(2, 12), Lectores: (randomInt(5, 80) / 10).toFixed(1) + 'K' };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEMÁFORO TÁCTICO — THREAT SCANNING & CLASSIFICATION ENGINE
+// ═══════════════════════════════════════════════════════════════════════════
+
+function scanThreatLevel() {
+  // Only scan news from the last 24 hours
+  const cutoff = new Date();
+  cutoff.setHours(cutoff.getHours() - 24);
+  
+  const recentNews = state.allNews.filter(n => n.timestamp >= cutoff);
+  
+  let highestLevel = 'green';
+  const threats = [];
+  const matchedKws = new Set();
+  
+  recentNews.forEach(n => {
+    const text = `${n.title} ${n.excerpt}`.toLowerCase();
+    
+    // Check RED triggers first (highest priority)
+    for (const kw of THREAT_LEVELS.red.triggers) {
+      if (text.includes(kw.toLowerCase())) {
+        highestLevel = 'red';
+        matchedKws.add(kw);
+        if (!threats.find(t => t.id === n.id)) {
+          threats.push({ ...n, threatLevel: 'red', matchedKeyword: kw });
+        }
+      }
+    }
+    
+    // Check YELLOW triggers
+    for (const kw of THREAT_LEVELS.yellow.triggers) {
+      if (text.includes(kw.toLowerCase())) {
+        if (highestLevel !== 'red') highestLevel = 'yellow';
+        matchedKws.add(kw);
+        if (!threats.find(t => t.id === n.id)) {
+          threats.push({ ...n, threatLevel: 'yellow', matchedKeyword: kw });
+        }
+      }
+    }
+  });
+  
+  // Sort threats: red first, then yellow, then by recency
+  threats.sort((a, b) => {
+    if (a.threatLevel !== b.threatLevel) {
+      return a.threatLevel === 'red' ? -1 : 1;
+    }
+    return b.timestamp - a.timestamp;
+  });
+  
+  const previousLevel = state.currentThreatLevel;
+  state.currentThreatLevel = highestLevel;
+  state.detectedThreats = threats.slice(0, 10); // Keep top 10
+  state.matchedKeywords = matchedKws;
+  state.lastSemaforoScan = new Date();
+  
+  // Alert on escalation
+  if (THREAT_LEVELS[highestLevel].level > THREAT_LEVELS[previousLevel].level) {
+    const tlInfo = THREAT_LEVELS[highestLevel];
+    const firstThreat = threats[0];
+    
+    if (highestLevel === 'red') {
+      showToast(`🔴 ${tlInfo.label}`, 
+        `¡ALERTA CRÍTICA! ${tlInfo.protocolName} activado — "${firstThreat?.title?.substring(0, 60)}..."`, 
+        'breaking');
+      document.body.classList.add('alert-red');
+      document.body.classList.remove('alert-yellow');
+    } else if (highestLevel === 'yellow') {
+      showToast(`🟡 ${tlInfo.label}`, 
+        `${tlInfo.protocolName} activado — "${firstThreat?.title?.substring(0, 60)}..."`, 
+        'warning');
+      document.body.classList.add('alert-yellow');
+      document.body.classList.remove('alert-red');
+    }
+  } else if (highestLevel === 'green' && previousLevel !== 'green') {
+    showToast('🟢 CÓDIGO VERDE', 'Amenaza desescalada — Volviendo a operación normal', 'success');
+    document.body.classList.remove('alert-red', 'alert-yellow');
+  }
+  
+  updateSemaforoUI();
+}
+
+function updateSemaforoUI() {
+  const level = THREAT_LEVELS[state.currentThreatLevel];
+  
+  // 1. Update traffic lights
+  const lightGreen = document.getElementById('lightGreen');
+  const lightYellow = document.getElementById('lightYellow');
+  const lightRed = document.getElementById('lightRed');
+  
+  // Reset all lights
+  [lightGreen, lightYellow, lightRed].forEach(l => {
+    if (l) { l.classList.remove('active'); l.classList.add('inactive'); }
+  });
+  
+  // Activate the correct light
+  if (state.currentThreatLevel === 'green' && lightGreen) {
+    lightGreen.classList.add('active'); lightGreen.classList.remove('inactive');
+  } else if (state.currentThreatLevel === 'yellow' && lightYellow) {
+    lightYellow.classList.add('active'); lightYellow.classList.remove('inactive');
+    if (lightGreen) { lightGreen.classList.add('active'); lightGreen.classList.remove('inactive'); }
+  } else if (state.currentThreatLevel === 'red') {
+    if (lightRed) { lightRed.classList.add('active'); lightRed.classList.remove('inactive'); }
+    if (lightYellow) { lightYellow.classList.add('active'); lightYellow.classList.remove('inactive'); }
+    if (lightGreen) { lightGreen.classList.add('active'); lightGreen.classList.remove('inactive'); }
+  }
+  
+  // 2. Update level labels
+  const levelBadge = document.getElementById('semaforoLevelBadge');
+  const levelText = document.getElementById('semaforoLevelText');
+  
+  if (levelBadge) {
+    levelBadge.textContent = level.label;
+    levelBadge.className = `semaforo-level-label ${level.levelClass}`;
+  }
+  if (levelText) {
+    levelText.textContent = `${level.name.toUpperCase()} — ${level.codename}`;
+    levelText.className = `semaforo-level-label ${level.levelClass}`;
+  }
+  
+  // 3. Update timestamp
+  const timeEl = document.getElementById('semaforoTime');
+  if (timeEl && state.lastSemaforoScan) {
+    const t = state.lastSemaforoScan.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    timeEl.textContent = `Último escaneo: ${t}`;
+  }
+  
+  // 4. Update protocol panel
+  const panel = document.getElementById('protocolPanel');
+  if (panel) {
+    panel.className = `protocol-panel ${level.levelClass}`;
+  }
+  
+  const protocolIcon = document.getElementById('protocolIcon');
+  const protocolName = document.getElementById('protocolName');
+  const protocolCode = document.getElementById('protocolCode');
+  
+  if (protocolIcon) protocolIcon.textContent = level.icon;
+  if (protocolName) protocolName.textContent = level.protocolName;
+  if (protocolCode) {
+    protocolCode.textContent = level.codeLabel;
+    protocolCode.className = `protocol-codename ${level.codeClass}`;
+  }
+  
+  // 5. Update trigger tags
+  const triggerTagsEl = document.getElementById('triggerTags');
+  if (triggerTagsEl) {
+    const matchedClass = state.currentThreatLevel === 'red' ? 'matched' : 
+                          state.currentThreatLevel === 'yellow' ? 'matched-yellow' : 'matched-green';
+    
+    triggerTagsEl.innerHTML = level.triggerLabels.map(label => {
+      // Check if any keyword from this category was matched
+      const isMatched = state.matchedKeywords.size > 0;
+      return `<span class="trigger-tag ${isMatched ? matchedClass : ''}">${label}</span>`;
+    }).join('');
+    
+    // Also show matched keywords as extra tags
+    if (state.matchedKeywords.size > 0) {
+      const kwTags = Array.from(state.matchedKeywords).slice(0, 5).map(kw => 
+        `<span class="trigger-tag ${matchedClass}" style="font-style: italic;">🔍 "${kw}"</span>`
+      ).join('');
+      triggerTagsEl.innerHTML += kwTags;
+    }
+  }
+  
+  // 6. Update protocol actions
+  const actionsEl = document.getElementById('protocolActions');
+  if (actionsEl) {
+    actionsEl.innerHTML = `
+      <div class="protocol-actions-title">♞ Movimientos Recomendados</div>
+      ${level.actions.map(a => `
+        <div class="protocol-action">
+          <span class="action-icon">${a.icon}</span>
+          ${a.text}
+          <span class="action-priority ${a.priorityClass}">${a.priority}</span>
+        </div>
+      `).join('')}
+    `;
+  }
+  
+  // 7. Update detected threats list
+  const threatsContainer = document.getElementById('detectedThreats');
+  const threatsList = document.getElementById('threatsList');
+  
+  if (threatsContainer && threatsList) {
+    if (state.detectedThreats.length > 0) {
+      threatsContainer.style.display = 'block';
+      threatsList.innerHTML = state.detectedThreats.slice(0, 5).map(t => {
+        const isRed = t.threatLevel === 'red';
+        const threatClass = isRed ? '' : 'yellow-threat';
+        return `
+          <div class="threat-item ${threatClass}" onclick="openNewsDetail(${t.id})">
+            <div class="threat-item-title">${isRed ? '🔴' : '🟡'} ${t.title}</div>
+            <div class="threat-item-meta">
+              <span>📰 ${t.source?.name || 'Fuente'}</span>
+              <span>•</span>
+              <span>🔍 "${t.matchedKeyword}"</span>
+              <span>•</span>
+              <span>🕐 ${formatTimeAgo(t.timestamp)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      threatsContainer.style.display = 'none';
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1178,6 +1519,8 @@ function updateAll() {
   generateSparkline('sparkSources', 12, 100);
   generateSparkline('sparkEngagement', 12, 100);
   updateLastUpdated();
+  // Semáforo Táctico — escanear amenazas
+  scanThreatLevel();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1187,9 +1530,9 @@ function updateAll() {
 function addActivity(newsItem) {
   const catInfo = CATEGORIES[newsItem.category];
   const actions = [
-    `publicó: "${newsItem.title.substring(0, 55)}..."`,
-    `nueva nota en ${catInfo.label}: "${newsItem.title.substring(0, 45)}..."`,
-    `mencionó a Gaby Molina en la sección de ${catInfo.label}`
+    `realizó un movimiento táctico: "${newsItem.title.substring(0, 55)}..."`,
+    `posicionó una jugada en el flanco de ${catInfo.label}: "${newsItem.title.substring(0, 45)}..."`,
+    `avanzó ficha en el tablero estratégico de ${catInfo.label}`
   ];
 
   state.activityIdCounter++;
@@ -1599,15 +1942,14 @@ function exportTxtReport() {
   const dateStr = `${now.getDate()} DE ${months[now.getMonth()]} DE ${now.getFullYear()}`;
 
   // 3. Ensamblar Texto
-  let textOut = `///  ÍNDICE:  
-  
- 
+  let textOut = `♛ HANNANEL PRO — CORTE TÁCTICO DE MEDIOS (MEDIA BOARD)
 
- 
-1.	FOCOS ROJOS  
-2.	TEMAS QUE INVOLUCRAN A LA SEE 
-3.	TEMAS EDUCATIVOS (GENERAL)  
-4.	BOLETINES  
+///  ÍNDICE ESTRATÉGICO:  
+  
+1.	FOCOS ROJOS [JUGADAS DE OPOSICIÓN / AMENAZAS]
+2.	TEMAS QUE INVOLUCRAN A LA SEE [POSICIONES CONSOLIDADAS]
+3.	TEMAS EDUCATIVOS (GENERAL) [DESARROLLO DEL TABLERO]
+4.	BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO [MOVIMIENTOS DE APERTURA]
 
   
 
@@ -1646,7 +1988,7 @@ ________________________________________
 `;
 
   // ── Sección 1. FOCOS ROJOS ──
-  textOut += `1. 🔴 FOCOS ROJOS\n`;
+  textOut += `1. 🔴 FOCOS ROJOS [JUGADAS DE OPOSICIÓN / AMENAZAS]\n`;
   if (focosRojos.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -1665,7 +2007,7 @@ ________________________________________
   textOut += `________________________________________\n`;
 
   // ── Sección 2. TEMAS QUE INVOLUCRAN A LA SEE ──
-  textOut += `2. 🟢 TEMAS QUE INVOLUCRAN A LA SEE\n`;
+  textOut += `2. 🟢 TEMAS QUE INVOLUCRAN A LA SEE [POSICIONES CONSOLIDADAS]\n`;
   if (temasSEE.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -1682,7 +2024,7 @@ ________________________________________
   textOut += `________________________________________\n`;
 
   // ── Sección 3. TEMAS EDUCATIVOS (GENERAL) ──
-  textOut += `3.  TEMAS EDUCATIVOS (GENERAL)\n`;
+  textOut += `3.  TEMAS EDUCATIVOS (GENERAL) [DESARROLLO DEL TABLERO]\n`;
   if (temasEducativos.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -1703,7 +2045,7 @@ ________________________________________
   textOut += `________________________________________\n`;
 
   // ── Sección 4. BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO ──
-  textOut += `4. 🟢 BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO\n`;
+  textOut += `4. 🟢 BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO [MOVIMIENTOS DE APERTURA]\n`;
   if (boletinesEquipo.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -1731,7 +2073,7 @@ ________________________________________
     link.click();
     document.body.removeChild(link);
     
-    showToast('📥 Descarga completa', `Corte informativo exportado con ${newsList.length} notas`, 'success');
+    showToast('📥 Descarga completa', `Corte táctico exportado con ${newsList.length} jugadas`, 'success');
   } catch (err) {
     showToast('⚠️ Error', 'No se pudo generar el archivo de descarga.', 'warning');
   }

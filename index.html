@@ -6,7 +6,10 @@
   <meta name="description" content="Hannanel Pro — Dashboard de Monitoreo en Vivo de Noticias sobre Gaby Molina. Análisis en tiempo real por categoría: Política, Mediática, Cultura, Nota Rosa, Educación.">
   <title>Hannanel Pro · Monitoreo en Vivo — Gaby Molina</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>📡</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>♟</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Toast Container -->
@@ -30,10 +33,10 @@
     <!-- ═══════ SIDEBAR ═══════ -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo">H</div>
+        <div class="sidebar-logo">♛</div>
         <div class="sidebar-brand">
-          <h1>Hannanel Pro</h1>
-          <span>Media Intelligence</span>
+          <h1 class="pixel-text">Hannaneel</h1>
+          <span>Tactical Intelligence</span>
         </div>
       </div>
 
@@ -55,60 +58,60 @@
 
       <nav class="sidebar-nav">
         <div class="nav-section">
-          <div class="nav-section-title">Principal</div>
+          <div class="nav-section-title">Estrategia</div>
           <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
             <span class="icon">📊</span>
-            <span>Dashboard</span>
+            <span>Tablero Táctico</span>
           </div>
           <div class="nav-item" data-view="live" onclick="switchView('live')">
             <span class="icon">📡</span>
-            <span>Monitor en Vivo</span>
+            <span>Radar de Movimientos</span>
             <span class="badge" id="liveCount">12</span>
           </div>
           <div class="nav-item" data-view="news" onclick="switchView('news')">
             <span class="icon">📰</span>
-            <span>Todas las Noticias</span>
+            <span>Registro de Jugadas</span>
           </div>
         </div>
 
         <div class="nav-section">
-          <div class="nav-section-title">Categorías</div>
+          <div class="nav-section-title">Fichas del Tablero</div>
           <div class="nav-item" data-category="politica" onclick="filterByCategory('politica')">
-            <span class="icon">🏛️</span>
-            <span>Política</span>
+            <span class="icon">♝</span>
+            <span>Alfil / Política</span>
             <span class="badge" id="countPolitica" style="background: var(--accent-primary);">0</span>
           </div>
           <div class="nav-item" data-category="mediatica" onclick="filterByCategory('mediatica')">
-            <span class="icon">📺</span>
-            <span>Mediática</span>
+            <span class="icon">♞</span>
+            <span>Caballo / Mediática</span>
             <span class="badge" id="countMediatica" style="background: var(--accent-secondary);">0</span>
           </div>
           <div class="nav-item" data-category="cultura" onclick="filterByCategory('cultura')">
-            <span class="icon">🎭</span>
-            <span>Cultura</span>
+            <span class="icon">♜</span>
+            <span>Torre / Cultura</span>
             <span class="badge" id="countCultura" style="background: var(--accent-tertiary);">0</span>
           </div>
           <div class="nav-item" data-category="nota-rosa" onclick="filterByCategory('nota-rosa')">
-            <span class="icon">💝</span>
-            <span>Nota Rosa</span>
+            <span class="icon">♛</span>
+            <span>Reina / Nota Rosa</span>
             <span class="badge" id="countNotaRosa" style="background: var(--accent-pink);">0</span>
           </div>
           <div class="nav-item" data-category="educacion" onclick="filterByCategory('educacion')">
-            <span class="icon">📚</span>
-            <span>Educación</span>
+            <span class="icon">♙</span>
+            <span>Peón / Educación</span>
             <span class="badge success" id="countEducacion">0</span>
           </div>
         </div>
 
         <div class="nav-section">
-          <div class="nav-section-title">Análisis</div>
+          <div class="nav-section-title">Análisis de Juego</div>
           <div class="nav-item" data-view="sentiment" onclick="switchView('sentiment')">
             <span class="icon">📈</span>
-            <span>Sentimiento</span>
+            <span>Balance de Fuerzas</span>
           </div>
           <div class="nav-item" data-view="sources" onclick="switchView('sources')">
             <span class="icon">🌐</span>
-            <span>Fuentes</span>
+            <span>Mapa del Tablero</span>
           </div>
         </div>
       </nav>
@@ -209,6 +212,81 @@
           </div>
         </div>
 
+        <!-- ══ SEMÁFORO TÁCTICO ══ -->
+        <div class="semaforo-section" id="semaforoSection">
+          <div class="section-header">
+            <div>
+              <div class="section-title">🚦 Semáforo <span class="highlight">Táctico</span></div>
+              <div class="section-subtitle">Sistema de alerta temprana — Clasificación de amenazas en tiempo real</div>
+            </div>
+            <span class="semaforo-level-label level-green" id="semaforoLevelBadge">♟ OPERACIÓN NORMAL</span>
+          </div>
+          <div class="semaforo-grid">
+            <!-- Traffic Light Tower -->
+            <div class="semaforo-tower">
+              <div class="semaforo-tower-title">Nivel de Amenaza</div>
+              <div class="semaforo-lights">
+                <div class="semaforo-light green inactive" id="lightGreen" title="Verde — Operación Normal">🟢</div>
+                <div class="semaforo-light yellow inactive" id="lightYellow" title="Amarillo — Alerta Preventiva">🟡</div>
+                <div class="semaforo-light red inactive" id="lightRed" title="Rojo — Crisis Activa">🔴</div>
+              </div>
+              <div class="semaforo-level-label level-green" id="semaforoLevelText">VERDE — APERTURA</div>
+              <div class="semaforo-timestamp" id="semaforoTime">Último escaneo: --:--:--</div>
+            </div>
+
+            <!-- Protocol Panel -->
+            <div class="protocol-panel level-green" id="protocolPanel">
+              <div class="protocol-header">
+                <div class="protocol-title">
+                  <span class="protocol-icon" id="protocolIcon">♟</span>
+                  <span id="protocolName">Protocolo de Apertura</span>
+                </div>
+                <span class="protocol-codename code-green" id="protocolCode">CÓDIGO VERDE</span>
+              </div>
+              <div class="protocol-body" id="protocolBody">
+                <!-- Triggers -->
+                <div class="protocol-triggers">
+                  <div class="protocol-triggers-title">Activadores Detectados</div>
+                  <div class="trigger-tags" id="triggerTags">
+                    <span class="trigger-tag matched-green">Boletines</span>
+                    <span class="trigger-tag">Becas</span>
+                    <span class="trigger-tag">Eventos</span>
+                  </div>
+                </div>
+
+                <!-- Protocol Actions -->
+                <div class="protocol-actions" id="protocolActions">
+                  <div class="protocol-actions-title">♞ Movimientos Recomendados</div>
+                  <div class="protocol-action">
+                    <span class="action-icon">📢</span>
+                    Difundir información positiva en canales oficiales
+                    <span class="action-priority priority-normal">Normal</span>
+                  </div>
+                  <div class="protocol-action">
+                    <span class="action-icon">📱</span>
+                    Amplificar cobertura en redes sociales
+                    <span class="action-priority priority-normal">Normal</span>
+                  </div>
+                  <div class="protocol-action">
+                    <span class="action-icon">📊</span>
+                    Mantener posicionamiento estratégico
+                    <span class="action-priority priority-normal">Normal</span>
+                  </div>
+                </div>
+
+                <!-- Detected Threats (populated by JS) -->
+                <div class="detected-threats" id="detectedThreats" style="display: none;">
+                  <div class="detected-threats-title">
+                    <span class="live-dot" style="background: #f87171; width: 6px; height: 6px;"></span>
+                    Amenazas Detectadas en Tiempo Real
+                  </div>
+                  <div id="threatsList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ══ Monitor Section ══ -->
         <div class="monitor-section">
           <div class="section-header">
@@ -225,30 +303,30 @@
         <!-- ══ Category Coverage ══ -->
         <div class="section-header">
           <div>
-            <div class="section-title">📂 Cobertura por <span class="highlight">Categoría</span></div>
-            <div class="section-subtitle">Distribución de noticias sobre Gaby Molina</div>
+            <div class="section-title">📂 Cobertura por <span class="highlight">Ficha / Rol</span></div>
+            <div class="section-subtitle">Distribución de noticias sobre Gaby Molina en el Tablero</div>
           </div>
         </div>
         <div class="coverage-grid" id="coverageGrid">
           <div class="coverage-item">
             <div class="coverage-value" id="covPolitica">0</div>
-            <div class="coverage-label">Política</div>
+            <div class="coverage-label">♝ Alfil / Política</div>
           </div>
           <div class="coverage-item">
             <div class="coverage-value" id="covMediatica">0</div>
-            <div class="coverage-label">Mediática</div>
+            <div class="coverage-label">♞ Caballo / Mediática</div>
           </div>
           <div class="coverage-item">
             <div class="coverage-value" id="covCultura">0</div>
-            <div class="coverage-label">Cultura</div>
+            <div class="coverage-label">♜ Torre / Cultura</div>
           </div>
           <div class="coverage-item">
             <div class="coverage-value" id="covNotaRosa">0</div>
-            <div class="coverage-label">Nota Rosa</div>
+            <div class="coverage-label">♛ Reina / Nota Rosa</div>
           </div>
           <div class="coverage-item">
             <div class="coverage-value" id="covEducacion">0</div>
-            <div class="coverage-label">Educación</div>
+            <div class="coverage-label">♙ Peón / Educación</div>
           </div>
         </div>
 
@@ -256,34 +334,34 @@
         <div style="margin-top: 28px;">
           <div class="section-header">
             <div>
-              <div class="section-title">📰 Feed de <span class="highlight">Noticias</span></div>
-              <div class="section-subtitle">Últimas noticias sobre Gaby Molina clasificadas por categoría</div>
+              <div class="section-title">📰 Feed de <span class="highlight">Noticias / Jugadas</span></div>
+              <div class="section-subtitle">Últimas noticias sobre Gaby Molina clasificadas por categoría táctica</div>
             </div>
           </div>
 
           <div class="category-tabs" id="categoryTabs">
             <button class="category-tab active" data-filter="all" onclick="filterNews('all')">
-              🔥 Todas
+              🔥 Todo el Tablero
               <span class="tab-count" id="tabAll">0</span>
             </button>
             <button class="category-tab" data-filter="politica" onclick="filterNews('politica')">
-              🏛️ Política
+              ♝ Alfil / Política
               <span class="tab-count" id="tabPolitica">0</span>
             </button>
             <button class="category-tab" data-filter="mediatica" onclick="filterNews('mediatica')">
-              📺 Mediática
+              ♞ Caballo / Mediática
               <span class="tab-count" id="tabMediatica">0</span>
             </button>
             <button class="category-tab" data-filter="cultura" onclick="filterNews('cultura')">
-              🎭 Cultura
+              ♜ Torre / Cultura
               <span class="tab-count" id="tabCultura">0</span>
             </button>
             <button class="category-tab" data-filter="nota-rosa" onclick="filterNews('nota-rosa')">
-              💝 Nota Rosa
+              ♛ Reina / Nota Rosa
               <span class="tab-count" id="tabNotaRosa">0</span>
             </button>
             <button class="category-tab" data-filter="educacion" onclick="filterNews('educacion')">
-              📚 Educación
+              ♙ Peón / Educación
               <span class="tab-count" id="tabEducacion">0</span>
             </button>
           </div>

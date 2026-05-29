@@ -1,0 +1,11 @@
+{
+  "name": "hannanel-news-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker — Backend de noticias para Hannanel Pro",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "npx wrangler dev --test-scheduled",
+    "deploy": "npx wrangler deploy",
+    "tail": "npx wrangler tail"
+  }
+}
