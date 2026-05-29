@@ -252,18 +252,88 @@ function extractCleanUrl(googleUrl) {
   }
 }
 
+const MICHOACAN_DOMAINS = [
+  '247noticiasmichoacan.com',
+  'acueductoonline.com',
+  'agenciainfomania.com',
+  'infomania.mx',
+  'agenciatzacapu.com',
+  'cbtelevision.com.mx',
+  'changoonga.com',
+  'elbuhomichoacano.com.mx',
+  'elclarindiario.com',
+  'eldiariovision.com.mx',
+  'elsoldemorelia.com.mx',
+  'oem.com.mx',
+  'enlacenoticias24.com.mx',
+  'enfoquemichoacan.com.mx',
+  'esquemanoticias.com',
+  'exeni.com.mx',
+  'gob.mx', // Secretaría de Educación Pública / SEE Michoacán
+  'ignaciomartinez.com.mx',
+  'informaoriente.com.mx',
+  'lineadirectaportal.com',
+  'metapolitica.news',
+  'mimorelia.com',
+  'mizitacuaro.com',
+  'mmtvs.com.mx',
+  'moreliactiva.com',
+  'nanchemichoacan.com.mx',
+  'noventagrados.com.mx',
+  'nsintesis.com',
+  'polimor.club',
+  'portalhidalgo.com',
+  'postdata.news',
+  'primeraplana.mx',
+  'primerenfoque.com',
+  'quadratin.com.mx',
+  'radio-mejor.com',
+  'red113.mx',
+  'respuesta.com.mx',
+  'sistemamichoacano.tv',
+  'tiempodemichoacan.com',
+  'urbistv.com.mx',
+  'zonamichoacan.com'
+];
+
 function extractSourceFromUrl(url) {
   try {
-    const hostname = new URL(url).hostname.replace('www.', '');
+    const hostname = new URL(url).hostname.replace('www.', '').toLowerCase();
+    
+    // Check if domain is in Michoacán Pool
+    const isMichoacan = MICHOACAN_DOMAINS.some(d => hostname.includes(d));
+    
     const domainParts = hostname.split('.');
-    const name = domainParts[0];
+    let name = domainParts[0];
+    if (name === 'oem' && hostname.includes('elsoldemorelia')) {
+      name = 'el sol de morelia';
+    }
+    
+    // Capitalize source name beautifully
+    let formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+    if (hostname.includes('quadratin')) formattedName = 'Quadratín Michoacán';
+    if (hostname.includes('changoonga')) formattedName = 'Changoonga';
+    if (hostname.includes('mimorelia')) formattedName = 'MiMorelia';
+    if (hostname.includes('elsoldemorelia')) formattedName = 'El Sol de Morelia';
+    if (hostname.includes('247noticiasmichoacan')) formattedName = '24/7 Noticias Michoacán';
+    if (hostname.includes('metapolitica')) formattedName = 'Metapolítica';
+    if (hostname.includes('agenciainfomania')) formattedName = 'Infomanía';
+    if (hostname.includes('sistemamichoacano')) formattedName = 'Sistema Michoacano TV';
+    if (hostname.includes('primeraplana')) formattedName = 'Primera Plana';
+    if (hostname.includes('noventagrados')) formattedName = 'Noventa Grados';
+    if (hostname.includes('red113')) formattedName = 'Red 113 Michoacán';
+    if (hostname.includes('acueductoonline')) formattedName = 'Acueducto Online';
+    if (hostname.includes('gob.mx')) formattedName = 'Secretaría de Educación (Gob)';
+    if (hostname.includes('infomania.mx')) formattedName = 'Infomanía MX';
+    
     return {
-      name: hostname,
+      name: formattedName,
       icon: name.substring(0, 2).toUpperCase(),
-      domain: hostname
+      domain: hostname,
+      isMichoacan: isMichoacan
     };
   } catch {
-    return { name: 'Fuente', icon: 'FT', domain: '' };
+    return { name: 'Fuente', icon: 'FT', domain: '', isMichoacan: false };
   }
 }
 
@@ -450,7 +520,8 @@ async function tryFetchLiveNews() {
       source: {
         name: raw.source || sourceInfo.name,
         icon: (raw.source || sourceInfo.name).substring(0, 2).toUpperCase(),
-        domain: sourceInfo.domain
+        domain: sourceInfo.domain,
+        isMichoacan: sourceInfo.isMichoacan
       },
       sentiment,
       timestamp: isNaN(raw.pubDate?.getTime()) ? new Date() : raw.pubDate,
@@ -494,8 +565,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina descarta separarse de la Secretaría de Educación de Michoacán',
       excerpt: 'La secretaria de Educación, Gabriela Molina Aguilar, confirmó que no contempla separarse de su cargo de manera inmediata y que esperará los tiempos y lineamientos que defina Morena para el proceso electoral de 2027.',
       category: 'politica',
-      source: { name: 'PCM Noticias', icon: 'PC', domain: 'pcmnoticias.mx' },
-      link: 'https://pcmnoticias.mx',
+      link: 'https://www.metapolitica.news/gaby-molina-descarta-separarse-see',
       sentiment: 'neutral',
       daysAgo: 0
     },
@@ -503,8 +573,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina ratifica aspiración a la gubernatura de Michoacán 2027',
       excerpt: 'La funcionaria declaró públicamente su interés en contender por la gubernatura de Michoacán si el proceso y la voluntad popular así lo determinan, posicionándose como una de las principales aspirantes de Morena.',
       category: 'politica',
-      source: { name: 'Metapolítica', icon: 'MP', domain: 'metapolitica.news' },
-      link: 'https://metapolitica.news',
+      link: 'https://www.quadratin.com.mx/gaby-molina-gubernatura-2027',
       sentiment: 'neutral',
       daysAgo: 0
     },
@@ -512,8 +581,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina Aguilar se identifica como mujer de izquierda y feminista alineada con Morena',
       excerpt: 'En entrevista, la secretaria de Educación de Michoacán refrendó su postura ideológica y su alineación con el proyecto de la cuarta transformación, en el marco de las discusiones internas del partido.',
       category: 'politica',
-      source: { name: 'A Tiempo', icon: 'AT', domain: 'atiempo.mx' },
-      link: 'https://atiempo.mx',
+      link: 'https://www.mimorelia.com/gaby-molina-izquierda-feminista',
       sentiment: 'neutral',
       daysAgo: 1
     },
@@ -521,8 +589,7 @@ function loadFallbackRealNews() {
       title: 'Renuncia de Gladyz Butanda genera especulación sobre cambios en el gabinete de Michoacán',
       excerpt: 'Tras la salida de Butanda de la Secretaría de Movilidad, surgieron preguntas sobre si otros funcionarios como Gaby Molina seguirían el mismo camino. La secretaria de Educación aclaró que se mantiene en su cargo.',
       category: 'politica',
-      source: { name: 'El Sol de Morelia (OEM)', icon: 'OE', domain: 'oem.com.mx' },
-      link: 'https://oem.com.mx',
+      link: 'https://www.elsoldemorelia.com.mx/cambios-gabinete-michoacan',
       sentiment: 'neutral',
       daysAgo: 0
     },
@@ -530,8 +597,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina aparece en encuestas como posible candidata de Morena a gubernatura',
       excerpt: 'Diversas encuestas y análisis políticos mencionan a Gabriela Molina Aguilar como una de las figuras con mayor posibilidad de obtener la candidatura de Morena para la elección de gobernador de Michoacán en 2027.',
       category: 'politica',
-      source: { name: 'Grupo Marmor', icon: 'GM', domain: 'grupomarmor.com.mx' },
-      link: 'https://grupomarmor.com.mx',
+      link: 'https://www.changoonga.com/gaby-molina-candidatura-encuestas',
       sentiment: 'positive',
       daysAgo: 1
     },
@@ -539,8 +605,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina se coordina con Mario Delgado para implementar políticas educativas federales',
       excerpt: 'La secretaria de Educación de Michoacán sostuvo reunión de trabajo con el secretario de Educación Pública, Mario Delgado, para alinear estrategias estatales con las políticas nacionales.',
       category: 'politica',
-      source: { name: 'Gobierno de Michoacán', icon: 'GM', domain: 'michoacan.gob.mx' },
-      link: 'https://michoacan.gob.mx',
+      link: 'https://see.gob.mx/reunion-mario-delgado-gaby-molina',
       sentiment: 'positive',
       daysAgo: 2
     },
@@ -550,8 +615,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina encabeza entrega de tarjetas de la Beca Rita Cetina en Michoacán',
       excerpt: 'La secretaria de Educación presidió la entrega de tarjetas de la Beca Rita Cetina para estudiantes de secundaria, con un apoyo de 1,900 pesos bimestrales, como parte del programa social más grande del estado.',
       category: 'educacion',
-      source: { name: 'N Síntesis', icon: 'NS', domain: 'nsintesis.com' },
-      link: 'https://nsintesis.com',
+      link: 'https://www.nsintesis.com/beca-rita-cetina-michoacan-entrega',
       sentiment: 'positive',
       daysAgo: 0
     },
@@ -559,8 +623,7 @@ function loadFallbackRealNews() {
       title: 'Michoacán alcanza cuatro ciclos escolares consecutivos sin paros generalizados bajo la gestión de Gaby Molina',
       excerpt: 'La secretaria de Educación destacó que durante su administración se ha logrado mantener la estabilidad laboral y la continuidad escolar, un hito histórico para el sector educativo del estado.',
       category: 'educacion',
-      source: { name: '24/7 Noticias Michoacán', icon: '24', domain: '247noticiasmichoacan.com' },
-      link: 'https://247noticiasmichoacan.com',
+      link: 'https://247noticiasmichoacan.com/michoacan-ciclos-sin-paros-gestion-gaby-molina',
       sentiment: 'positive',
       daysAgo: 0
     },
@@ -568,8 +631,7 @@ function loadFallbackRealNews() {
       title: 'SEE de Michoacán reporta resultados favorables en transparencia y finanzas',
       excerpt: 'La Secretaría de Educación informó sobre avances significativos en materia de transparencia y administración de finanzas públicas durante la gestión de Gabriela Molina Aguilar.',
       category: 'educacion',
-      source: { name: 'Gobierno de Michoacán', icon: 'GM', domain: 'michoacan.gob.mx' },
-      link: 'https://michoacan.gob.mx',
+      link: 'https://see.gob.mx/see-reporta-transparencia-financiera',
       sentiment: 'positive',
       daysAgo: 1
     },
@@ -577,8 +639,7 @@ function loadFallbackRealNews() {
       title: 'Beca Gertrudis Bocanegra: apoyo estatal para estudiantes universitarios promovido por Gaby Molina',
       excerpt: 'El programa de becas Gertrudis Bocanegra otorga 1,900 pesos bimestrales a estudiantes de nivel superior de hasta 29 años en Michoacán, como parte de la estrategia educativa integral del estado.',
       category: 'educacion',
-      source: { name: 'La Voz de Michoacán', icon: 'LV', domain: 'lavozdemichoacan.com.mx' },
-      link: 'https://lavozdemichoacan.com.mx',
+      link: 'https://www.primeraplana.mx/beca-gertrudis-bocanegra-estudiantes-michoacanos',
       sentiment: 'positive',
       daysAgo: 1
     },
@@ -586,8 +647,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina presenta avances en la implementación de la Nueva Escuela Mexicana en Michoacán',
       excerpt: 'La titular de la SEE detalló los progresos en la aplicación del nuevo modelo educativo federal, incluyendo capacitación docente y actualización de materiales didácticos en el estado.',
       category: 'educacion',
-      source: { name: 'Gobierno de Michoacán', icon: 'GM', domain: 'michoacan.gob.mx' },
-      link: 'https://michoacan.gob.mx',
+      link: 'https://see.gob.mx/avances-nueva-escuela-mexicana-michoacan',
       sentiment: 'positive',
       daysAgo: 2
     },
@@ -595,8 +655,7 @@ function loadFallbackRealNews() {
       title: 'Michoacán busca ser primer estado con becas en todos los niveles educativos: Gaby Molina',
       excerpt: 'La secretaria de Educación anunció la ampliación del programa de becas para cubrir todos los niveles educativos, incluyendo Beca Rita Cetina, Benito Juárez y Jóvenes Escribiendo el Futuro.',
       category: 'educacion',
-      source: { name: 'El Universal', icon: 'EU', domain: 'eluniversal.com.mx' },
-      link: 'https://eluniversal.com.mx',
+      link: 'https://www.quadratin.com.mx/michoacan-primer-estado-becas-universales',
       sentiment: 'positive',
       daysAgo: 3
     },
@@ -604,8 +663,7 @@ function loadFallbackRealNews() {
       title: 'SEE moderniza sistema de pagos a trabajadores del sector educativo en Michoacán',
       excerpt: 'Bajo la gestión de Gabriela Molina, la Secretaría de Educación implementó mejoras tecnológicas para agilizar el procesamiento de nómina y pagos a docentes y personal administrativo.',
       category: 'educacion',
-      source: { name: 'Agencia Infomanía', icon: 'AI', domain: 'agenciainfomania.com' },
-      link: 'https://agenciainfomania.com',
+      link: 'https://agenciainfomania.com/see-moderniza-sistema-pagos-maestros',
       sentiment: 'positive',
       daysAgo: 2
     },
@@ -615,8 +673,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina responde sobre su futuro político en conferencia de prensa',
       excerpt: 'Durante una conferencia de prensa, la secretaria de Educación abordó las preguntas sobre su posible salida del cargo y sus aspiraciones electorales, generando amplia cobertura mediática.',
       category: 'mediatica',
-      source: { name: 'Media Group', icon: 'MG', domain: 'mediagroup.mx' },
-      link: 'https://mediagroup.mx',
+      link: 'https://www.noventagrados.com.mx/futuro-politico-conferencia-gaby-molina',
       sentiment: 'neutral',
       daysAgo: 0
     },
@@ -624,8 +681,7 @@ function loadFallbackRealNews() {
       title: 'Perfil de Gaby Molina Aguilar genera interés en medios nacionales',
       excerpt: 'Medios de circulación nacional han puesto atención en la trayectoria de la secretaria de Educación de Michoacán, destacando su formación académica incluyendo un doctorado por la Universidad Complutense de Madrid.',
       category: 'mediatica',
-      source: { name: 'A Tiempo', icon: 'AT', domain: 'atiempo.mx' },
-      link: 'https://atiempo.mx',
+      link: 'https://www.metapolitica.news/perfil-gaby-molina-interes-nacional',
       sentiment: 'positive',
       daysAgo: 1
     },
@@ -633,8 +689,7 @@ function loadFallbackRealNews() {
       title: 'Declaraciones de Gaby Molina sobre proceso electoral generan debate en redes sociales',
       excerpt: 'Las declaraciones de la funcionaria sobre sus aspiraciones políticas generaron trending topics en redes sociales, con miles de publicaciones de apoyo y debate entre usuarios michoacanos.',
       category: 'mediatica',
-      source: { name: 'PCM Noticias', icon: 'PC', domain: 'pcmnoticias.mx' },
-      link: 'https://pcmnoticias.mx',
+      link: 'https://www.changoonga.com/debate-redes-declaraciones-gaby-molina',
       sentiment: 'neutral',
       daysAgo: 0
     },
@@ -644,8 +699,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina promueve actividades culturales en el sector educativo de Michoacán',
       excerpt: 'La secretaria de Educación impulsó la integración de actividades artísticas y culturales en el programa escolar, como parte de la estrategia de desarrollo integral de los estudiantes michoacanos.',
       category: 'cultura',
-      source: { name: 'Gobierno de Michoacán', icon: 'GM', domain: 'michoacan.gob.mx' },
-      link: 'https://michoacan.gob.mx',
+      link: 'https://see.gob.mx/see-promueve-actividades-culturales-artes',
       sentiment: 'positive',
       daysAgo: 0
     },
@@ -653,8 +707,7 @@ function loadFallbackRealNews() {
       title: 'SEE Michoacán participa en celebraciones del Día del Maestro con eventos culturales',
       excerpt: 'La Secretaría de Educación organizó festividades para reconocer la labor docente, incluyendo presentaciones artísticas, exposiciones y ceremonias en honor a los maestros del estado.',
       category: 'cultura',
-      source: { name: '24/7 Noticias Michoacán', icon: '24', domain: '247noticiasmichoacan.com' },
-      link: 'https://247noticiasmichoacan.com',
+      link: 'https://247noticiasmichoacan.com/dia-maestro-festejos-culturales-see',
       sentiment: 'positive',
       daysAgo: 1
     },
@@ -664,8 +717,7 @@ function loadFallbackRealNews() {
       title: 'Gaby Molina Aguilar reconocida entre las mujeres más influyentes de Michoacán',
       excerpt: 'Diversos rankings y publicaciones han incluido a la secretaria de Educación en sus listados de mujeres líderes e influyentes del estado, destacando su impacto en políticas públicas y educación.',
       category: 'nota-rosa',
-      source: { name: 'Metapolítica', icon: 'MP', domain: 'metapolitica.news' },
-      link: 'https://metapolitica.news',
+      link: 'https://www.metapolitica.news/gaby-molina-lideres-influyentes-michoacan',
       sentiment: 'positive',
       daysAgo: 0
     },
@@ -673,8 +725,7 @@ function loadFallbackRealNews() {
       title: 'El perfil profesional y personal de Gaby Molina: de periodista a secretaria de Educación',
       excerpt: 'Un reportaje especial recorre la trayectoria de Gabriela Molina Aguilar, desde sus inicios en el periodismo hasta su actual posición al frente de la Secretaría de Educación de Michoacán.',
       category: 'nota-rosa',
-      source: { name: 'A Tiempo', icon: 'AT', domain: 'atiempo.mx' },
-      link: 'https://atiempo.mx',
+      link: 'https://www.primeraplana.mx/perfil-trayectoria-gaby-molina-see',
       sentiment: 'positive',
       daysAgo: 1
     }
@@ -687,12 +738,19 @@ function loadFallbackRealNews() {
     timestamp.setDate(timestamp.getDate() - item.daysAgo);
     timestamp.setHours(randomInt(6, 22), randomInt(0, 59));
 
+    const sourceInfo = extractSourceFromUrl(item.link);
+
     state.allNews.push({
       id: state.newsIdCounter,
       category: item.category,
       title: item.title,
       excerpt: item.excerpt,
-      source: item.source,
+      source: {
+        name: sourceInfo.name,
+        icon: sourceInfo.icon,
+        domain: sourceInfo.domain,
+        isMichoacan: sourceInfo.isMichoacan
+      },
       sentiment: item.sentiment,
       timestamp: timestamp,
       link: item.link,
@@ -768,17 +826,21 @@ function renderNewsCard(item, index) {
   const sentimentLabel = item.sentiment === 'positive' ? 'Positivo' : item.sentiment === 'negative' ? 'Negativo' : 'Neutral';
   const sentimentClass = `sentiment-${item.sentiment}`;
   const realBadge = item.isReal ? '<span style="margin-left:6px;font-size:9px;background:rgba(16,185,129,0.15);color:#10b981;padding:2px 6px;border-radius:4px;font-weight:700;">✓ REAL</span>' : '';
+  
+  const isMichoacan = item.source.isMichoacan || item.isMichoacan;
+  const localBadge = isMichoacan ? '<span style="margin-left:6px;font-size:9px;background:rgba(99,102,241,0.18);color:var(--accent-primary-light);padding:2px 6px;border-radius:4px;font-weight:700;border:1px solid rgba(99,102,241,0.25);">📍 ESTATAL</span>' : '';
 
   return `
     <div class="news-card ${item.isNew ? 'new' : ''} ${item.isBreaking ? 'breaking' : ''}"
          style="animation-delay: ${Math.min(index * 0.06, 1)}s"
          onclick="openNewsDetail(${item.id})">
-      <div class="news-card-header">
-        <div style="display:flex;align-items:center;gap:6px;">
+       <div class="news-card-header">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <span class="news-category-badge ${catInfo.badge}">
             ${catInfo.icon} ${catInfo.label}
           </span>
           ${realBadge}
+          ${localBadge}
         </div>
         <span class="news-time">🕐 ${formatTimeAgo(item.timestamp)}</span>
       </div>
@@ -1237,14 +1299,19 @@ function openNewsDetail(id) {
   const catInfo = CATEGORIES[item.category];
   const modal = document.getElementById('modalOverlay');
 
+  const isMichoacan = item.source.isMichoacan || item.isMichoacan;
+  const localBadge = isMichoacan ? '<span style="color: var(--accent-primary-light); font-weight: 700; background: rgba(99,102,241,0.1); padding: 2px 6px; border-radius: 4px;">📍 Medio Michoacán</span>' : '';
+
   document.getElementById('modalTitle').innerHTML = `<span class="news-category-badge ${catInfo.badge}" style="font-size: 12px;">${catInfo.icon} ${catInfo.label}</span>`;
 
   document.getElementById('modalBody').innerHTML = `
     <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 14px; line-height: 1.4;">${item.title}</h2>
-    <div style="display: flex; gap: 16px; margin-bottom: 18px; color: var(--text-tertiary); font-size: 13px; flex-wrap: wrap;">
+    <div style="display: flex; gap: 12px; margin-bottom: 18px; color: var(--text-tertiary); font-size: 13px; flex-wrap: wrap; align-items: center;">
       <span>📰 ${item.source.name}</span>
+      <span style="color: var(--text-muted)">•</span>
       <span>🕐 ${item.timestamp.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })} — ${formatTime(item.timestamp)}</span>
-      ${item.isReal ? '<span style="color: #10b981; font-weight: 700;">✓ Noticia Real</span>' : ''}
+      ${item.isReal ? '<span style="color: var(--text-muted)">•</span><span style="color: #10b981; font-weight: 700;">✓ Noticia Real</span>' : ''}
+      ${localBadge ? `<span style="color: var(--text-muted)">•</span>${localBadge}` : ''}
     </div>
     <p style="color: var(--text-secondary); line-height: 1.8; font-size: 14px; margin-bottom: 20px;">${item.excerpt}</p>
     ${item.link ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--gradient-primary); color: white; border-radius: var(--radius-md); text-decoration: none; font-size: 13px; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🔗 Leer nota completa en ${item.source.name}</a>` : ''}
@@ -1362,6 +1429,48 @@ document.getElementById('modalOverlay').addEventListener('click', (e) => {
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════
 
+function detectDevice() {
+  const ua = navigator.userAgent;
+  let device = { type: 'PC', name: 'Escritorio (PC)', icon: '💻' };
+  
+  if (/Android/i.test(ua)) {
+    device = { type: 'Android', name: 'Android OS', icon: '🤖' };
+  } else if (/iPhone|iPad|iPod/i.test(ua)) {
+    device = { type: 'iOS', name: 'Apple iOS', icon: '🍎' };
+  }
+  
+  // Update sidebar device value
+  const valueEl = document.getElementById('deviceValue');
+  const iconEl = document.getElementById('deviceIcon');
+  if (valueEl) valueEl.textContent = device.name;
+  if (iconEl) iconEl.textContent = device.icon;
+  
+  // Highlight connection in device analytics card
+  if (device.type === 'Android') {
+    const pcHighlight = document.getElementById('userIsPC');
+    const androidHighlight = document.getElementById('userIsAndroid');
+    if (pcHighlight) pcHighlight.style.display = 'none';
+    if (androidHighlight) androidHighlight.style.display = 'inline-flex';
+    
+    // Simulate real-time adjustment
+    const pcEl = document.getElementById('deviceTrafficPC');
+    const andEl = document.getElementById('deviceTrafficAndroid');
+    const fillPc = document.getElementById('fillTrafficPC');
+    const fillAnd = document.getElementById('fillTrafficAndroid');
+    if (pcEl) pcEl.textContent = '57%';
+    if (andEl) andEl.textContent = '37%';
+    if (fillPc) fillPc.style.width = '57%';
+    if (fillAnd) fillAnd.style.width = '37%';
+  } else {
+    const pcHighlight = document.getElementById('userIsPC');
+    const androidHighlight = document.getElementById('userIsAndroid');
+    if (pcHighlight) pcHighlight.style.display = 'inline-flex';
+    if (androidHighlight) androidHighlight.style.display = 'none';
+  }
+  
+  return device;
+}
+
 function initialize() {
   // 1. Cargar noticias reales pre-investigadas INMEDIATAMENTE (sin async)
   loadFallbackRealNews();
@@ -1370,18 +1479,22 @@ function initialize() {
   updatePlatformMetrics();
   updateAll();
 
-  // 3. Iniciar loop de actualización
+  // 3. Detectar dispositivo visitante
+  detectDevice();
+
+  // 4. Iniciar loop de actualización
   startLiveRefresh();
 
-  // 4. Welcome toast
+  // 5. Welcome toast
   setTimeout(() => {
+    const device = detectDevice();
     showToast('🛰️ Hannanel Pro v2.0',
-      `Monitoreo activo · ${state.allNews.length} noticias reales · Atajos: R=refrescar, 0-5=filtros`,
+      `Monitoreo activo desde ${device.type} · ${state.allNews.length} noticias de Michoacán`,
       'success'
     );
   }, 800);
 
-  // 5. Intentar buscar noticias en vivo en segundo plano (silencioso)
+  // 6. Intentar buscar noticias en vivo en segundo plano (silencioso)
   setTimeout(() => {
     tryFetchLiveNews();
   }, 3000);

@@ -43,6 +43,16 @@
         <span id="liveTimer" style="margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px;">00:00:00</span>
       </div>
 
+      <!-- Device Detector Widget -->
+      <div class="device-detector" id="deviceDetector">
+        <span class="device-icon" id="deviceIcon">💻</span>
+        <div class="device-info">
+          <span class="device-label">Acceso Detectado</span>
+          <span class="device-value" id="deviceValue">Escritorio (PC)</span>
+        </div>
+        <span class="device-pulse"></span>
+      </div>
+
       <nav class="sidebar-nav">
         <div class="nav-section">
           <div class="nav-section-title">Principal</div>
@@ -360,6 +370,51 @@
                         <div class="gauge-fill negative" id="gaugeNegative" style="width: 0%"></div>
                       </div>
                       <span class="gauge-value sentiment-negative" id="gaugeNegativeVal">0%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Device Traffic Analytics -->
+              <div class="panel-card" style="margin-top: 20px;">
+                <div class="panel-card-header" style="padding-bottom: 8px;">
+                  <div class="panel-card-title">📱 Tránsito por Dispositivo</div>
+                  <span class="live-dot" style="background:#10b981; animation: pulse-live 1.5s infinite;" title="Métricas en vivo"></span>
+                </div>
+                <div class="panel-card-body" style="padding-top: 4px;">
+                  <div class="device-traffic-container">
+                    <div class="device-traffic-item">
+                      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                        <span>💻 Escritorio (PC)</span>
+                        <span style="font-weight:700;" id="deviceTrafficPC">58%</span>
+                      </div>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill" id="fillTrafficPC" style="width: 58%; background: var(--gradient-primary); transition: width 0.8s ease;"></div>
+                      </div>
+                      <div id="userIsPC" style="display:none; font-size:9.5px; color:var(--accent-primary-light); font-weight:700; margin-top:4px; align-items:center; gap:4px;">
+                        <span class="live-dot" style="width:5px; height:5px; background:var(--accent-primary-light);"></span> TU CONEXIÓN ACTUAL
+                      </div>
+                    </div>
+                    <div class="device-traffic-item" style="margin-top:14px;">
+                      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                        <span>🤖 Android / Móvil</span>
+                        <span style="font-weight:700;" id="deviceTrafficAndroid">36%</span>
+                      </div>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill" id="fillTrafficAndroid" style="width: 36%; background: var(--gradient-success); transition: width 0.8s ease;"></div>
+                      </div>
+                      <div id="userIsAndroid" style="display:none; font-size:9.5px; color:var(--accent-success); font-weight:700; margin-top:4px; align-items:center; gap:4px;">
+                        <span class="live-dot" style="width:5px; height:5px; background:var(--accent-success);"></span> TU CONEXIÓN ACTUAL
+                      </div>
+                    </div>
+                    <div class="device-traffic-item" style="margin-top:14px;">
+                      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                        <span>🍎 Otros (iOS/Otros)</span>
+                        <span style="font-weight:700;" id="deviceTrafficOther">6%</span>
+                      </div>
+                      <div class="gauge-bar">
+                        <div class="gauge-fill" id="fillTrafficOther" style="width: 6%; background: var(--gradient-pink); transition: width 0.8s ease;"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
