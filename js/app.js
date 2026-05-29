@@ -45,7 +45,7 @@ const CONFIG = {
 
 const CATEGORIES = {
   politica: {
-    label: 'Alfil / Política',
+    label: 'Política',
     icon: '♝',
     badge: 'badge-politica',
     color: '#818cf8',
@@ -83,7 +83,7 @@ const CATEGORIES = {
     ]
   },
   mediatica: {
-    label: 'Caballo / Mediática',
+    label: 'Mediática',
     icon: '♞',
     badge: 'badge-mediatica',
     color: '#06b6d4',
@@ -101,7 +101,7 @@ const CATEGORIES = {
     ]
   },
   cultura: {
-    label: 'Torre / Cultura',
+    label: 'Cultura',
     icon: '♜',
     badge: 'badge-cultura',
     color: '#8b5cf6',
@@ -118,7 +118,7 @@ const CATEGORIES = {
     ]
   },
   'nota-rosa': {
-    label: 'Reina / Nota Rosa',
+    label: 'Nota Rosa',
     icon: '♛',
     badge: 'badge-nota-rosa',
     color: '#ec4899',
