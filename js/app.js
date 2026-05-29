@@ -1276,10 +1276,59 @@ function filterByCategory(category) {
 
 function switchView(view) {
   state.currentView = view;
-  document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+  
+  // Highlight active view in sidebar
+  document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.toggle('active', item.dataset.view === view);
   });
-  if (view === 'dashboard') filterNews('all');
+  
+  // Dynamic Scroll & Highlight Focus Lógica
+  if (view === 'dashboard') {
+    filterNews('all');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (view === 'live') {
+    // Scroll to Monitor en Vivo / Tiempo Real
+    const el = document.querySelector('.monitor-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight-focus');
+      setTimeout(() => el.classList.remove('highlight-focus'), 3600);
+    }
+  } else if (view === 'news') {
+    // Scroll to Feed de Noticias
+    const el = document.getElementById('categoryTabs');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  } else if (view === 'sentiment') {
+    // Scroll to Sentiment Card in the right panel and highlight
+    const el = document.getElementById('sentimentGauge')?.closest('.panel-card');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight-focus');
+      setTimeout(() => el.classList.remove('highlight-focus'), 3600);
+      
+      showToast('📊 Análisis de Sentimiento', 
+        `Métricas generales: ${state.sentiment.positive}% Positivo · ${state.sentiment.neutral}% Neutral · ${state.sentiment.negative}% Negativo`, 
+        'info'
+      );
+    }
+  } else if (view === 'sources') {
+    // Scroll to Platform Monitor / Active Sources grid and highlight
+    const el = document.getElementById('monitorGrid');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight-focus');
+      setTimeout(() => el.classList.remove('highlight-focus'), 3600);
+      
+      const totalSources = new Set(state.allNews.map(n => n.source.name)).size;
+      const michoacanMenciones = state.allNews.filter(n => n.source.isMichoacan || n.isMichoacan).length;
+      showToast('🌐 Cobertura de Fuentes', 
+        `Rastreando activamente ${totalSources} medios · ${michoacanMenciones} menciones son de medios de tu pool local`, 
+        'success'
+      );
+    }
+  }
 }
 
 function handleSearch(query) {

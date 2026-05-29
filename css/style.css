@@ -1780,3 +1780,20 @@ body::before {
   background: var(--bg-glass-hover);
   color: var(--text-primary);
 }
+
+/* Dynamic Focus Glow Animation */
+@keyframes border-glow-focus {
+  0%, 100% {
+    border-color: var(--border-glass);
+    box-shadow: none;
+  }
+  50% {
+    border-color: var(--accent-primary-light);
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.45);
+  }
+}
+
+.highlight-focus {
+  animation: border-glow-focus 1.8s ease-in-out 2;
+  border-color: var(--accent-primary-light) !important;
+}
