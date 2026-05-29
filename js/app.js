@@ -1500,6 +1500,194 @@ function initialize() {
   }, 3000);
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORT SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+function exportTxtReport() {
+  const newsList = [...state.filteredNews];
+  
+  if (newsList.length === 0) {
+    showToast('⚠️ Exportación cancelada', 'No hay noticias en el feed actual para exportar.', 'warning');
+    return;
+  }
+
+  // 1. Clasificación
+  const focosRojos = [];
+  const temasSEE = [];
+  const temasEducativos = [];
+  const boletinesEquipo = [];
+
+  newsList.forEach(n => {
+    const text = `${n.title} ${n.excerpt}`.toLowerCase();
+    
+    if (n.sentiment === 'negative') {
+      focosRojos.push(n);
+    } else if (n.category === 'educacion') {
+      const isSee = text.includes('see') || text.includes('secretaría de educación');
+      const isBoletin = n.sentiment === 'positive' && (text.includes('gaby molina') || text.includes('entrega') || text.includes('oportunidad') || text.includes('beneficio') || text.includes('beca rita') || text.includes('beca gertrudis'));
+      
+      if (isBoletin) {
+        boletinesEquipo.push(n);
+      } else if (isSee) {
+        temasSEE.push(n);
+      } else {
+        temasEducativos.push(n);
+      }
+    } else {
+      // Otras categorías de interés general se agregan a educativos o boletines según sentimiento
+      if (n.sentiment === 'positive') {
+        boletinesEquipo.push(n);
+      } else {
+        temasEducativos.push(n);
+      }
+    }
+  });
+
+  // 2. Formatear Fecha
+  const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+  const now = new Date();
+  const dateStr = `${now.getDate()} DE ${months[now.getMonth()]} DE ${now.getFullYear()}`;
+
+  // 3. Ensamblar Texto
+  let textOut = `///  ÍNDICE:  
+  
+ 
+
+ 
+1.	FOCOS ROJOS  
+2.	TEMAS QUE INVOLUCRAN A LA SEE 
+3.	TEMAS EDUCATIVOS (GENERAL)  
+4.	BOLETINES  
+
+  
+
+
+
+
+
+
+
+
+
+Medios radiofónicos 
+•  La Pura Ley (Programa: "Así es la noticia", emisión vespertina con Jesús Marcha)
+•  Radio Ranchito 102.5 FM (Programa: "Al día con México" con Jania Serriteño)
+•  Candela (Emisión: "Candela estatal con HL")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CORTE INFORMATIVO – ${dateStr}
+________________________________________
+`;
+
+  // ── Sección 1. FOCOS ROJOS ──
+  textOut += `1. 🔴 FOCOS ROJOS\n`;
+  if (focosRojos.length === 0) {
+    textOut += `Sin registros detectados en este corte.\n`;
+  } else {
+    focosRojos.forEach(n => {
+      textOut += `________________________________________\n`;
+      textOut += `🔴 ${n.title}\n`;
+      textOut += `• ${n.excerpt}\n`;
+      textOut += `Publicado en portales de noticias:\n`;
+      textOut += `• ${n.link || 'https://github.com/arcaolxd/hannanel'} ${n.source.name}\n`;
+      textOut += `Medios que replicaron la nota:\n`;
+      textOut += `${n.source.name}.\n`;
+      textOut += `Impacto: Crítico / Negativo\n`;
+      textOut += `Total de medios en el corte: 1.\n`;
+    });
+  }
+  textOut += `________________________________________\n`;
+
+  // ── Sección 2. TEMAS QUE INVOLUCRAN A LA SEE ──
+  textOut += `2. 🟢 TEMAS QUE INVOLUCRAN A LA SEE\n`;
+  if (temasSEE.length === 0) {
+    textOut += `Sin registros detectados en este corte.\n`;
+  } else {
+    temasSEE.forEach(n => {
+      const impLabel = n.sentiment === 'positive' ? 'Positivo' : n.sentiment === 'negative' ? 'Negativo' : 'Informativo';
+      textOut += `________________________________________\n`;
+      textOut += `Tema: ${n.title}\n`;
+      textOut += `Contenido:\n${n.excerpt}\n\n`;
+      textOut += `Impacto: ${impLabel}\n`;
+      textOut += `URL: ${n.link || 'https://github.com/arcaolxd/hannanel'}\n`;
+      textOut += `Reportero-Medio / Líder de Opinión: ${n.source.name}\n`;
+    });
+  }
+  textOut += `________________________________________\n`;
+
+  // ── Sección 3. TEMAS EDUCATIVOS (GENERAL) ──
+  textOut += `3.  TEMAS EDUCATIVOS (GENERAL)\n`;
+  if (temasEducativos.length === 0) {
+    textOut += `Sin registros detectados en este corte.\n`;
+  } else {
+    temasEducativos.forEach(n => {
+      const emoji = n.sentiment === 'positive' ? '🟢' : n.sentiment === 'negative' ? '🔴' : '🟡';
+      const impLabel = n.sentiment === 'positive' ? 'Positivo' : n.sentiment === 'negative' ? 'Preventivo / Crítico' : 'Informativo / Preventivo';
+      textOut += `________________________________________\n`;
+      textOut += `${emoji} ${n.title}\n`;
+      textOut += `• ${n.excerpt}\n`;
+      textOut += `Publicado en portales de noticias:\n`;
+      textOut += `• ${n.link || 'https://github.com/arcaolxd/hannanel'} ${n.source.name}\n`;
+      textOut += `Medios que replicaron la nota:\n`;
+      textOut += `${n.source.name}.\n`;
+      textOut += `Impacto: ${impLabel}\n`;
+      textOut += `Total de medios en el corte: 1.\n`;
+    });
+  }
+  textOut += `________________________________________\n`;
+
+  // ── Sección 4. BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO ──
+  textOut += `4. 🟢 BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO\n`;
+  if (boletinesEquipo.length === 0) {
+    textOut += `Sin registros detectados en este corte.\n`;
+  } else {
+    boletinesEquipo.forEach(n => {
+      textOut += `________________________________________\n`;
+      textOut += `🟢 ${n.title}\n`;
+      textOut += `• ${n.excerpt}\n`;
+      textOut += `Publicado en portales de noticias:\n`;
+      textOut += `• ${n.link || 'https://github.com/arcaolxd/hannanel'} ${n.source.name}\n`;
+    });
+  }
+  textOut += `________________________________________\n`;
+
+  // 4. Descargar
+  try {
+    const blob = new Blob([textOut], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    
+    // Nombre formateado del archivo
+    const todayStr = now.toISOString().slice(0, 10);
+    link.download = `Corte_Informativo_${todayStr}.txt`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('📥 Descarga completa', `Corte informativo exportado con ${newsList.length} notas`, 'success');
+  } catch (err) {
+    showToast('⚠️ Error', 'No se pudo generar el archivo de descarga.', 'warning');
+  }
+}
+
 // Add spin animation
 const style = document.createElement('style');
 style.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;

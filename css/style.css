@@ -557,6 +557,32 @@ body::before {
   border-color: var(--border-hover);
 }
 
+.header-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+}
+
+.header-export-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  filter: brightness(1.1);
+}
+
+.header-export-btn:active {
+  transform: translateY(1px);
+}
+
 .header-btn .notification-dot {
   position: absolute;
   top: 6px;
