@@ -46,10 +46,10 @@ const CONFIG = {
 const CATEGORIES = {
   politica: {
     label: 'Política',
-    icon: '♝',
-    badge: 'badge-politica',
-    color: '#818cf8',
-    dotClass: 'political',
+    icon: '📰',
+    badge: 'badge-neutral',
+    
+    dotClass: 'neutral',
     keywords: [
       'político', 'política', 'gobernadora', 'gubernatura', 'morena', 'partido',
       'elección', 'elecciones', 'candidata', 'candidatura', 'congreso', 'legislatura',
@@ -63,11 +63,11 @@ const CATEGORIES = {
     ]
   },
   educacion: {
-    label: 'Peón / Educación',
-    icon: '♙',
-    badge: 'badge-educacion',
-    color: '#10b981',
-    dotClass: 'education',
+    label: 'Educación',
+    icon: '📰',
+    badge: 'badge-neutral',
+    
+    dotClass: 'neutral',
     keywords: [
       'educación', 'educativa', 'escuela', 'escolar', 'maestro', 'maestra',
       'docente', 'profesor', 'alumno', 'estudiante', 'beca', 'becas',
@@ -84,10 +84,10 @@ const CATEGORIES = {
   },
   mediatica: {
     label: 'Mediática',
-    icon: '♞',
-    badge: 'badge-mediatica',
-    color: '#06b6d4',
-    dotClass: 'media',
+    icon: '📰',
+    badge: 'badge-neutral',
+    
+    dotClass: 'neutral',
     keywords: [
       'entrevista', 'declaraciones', 'conferencia de prensa', 'medios',
       'comunicación', 'redes sociales', 'twitter', 'x.com', 'facebook',
@@ -102,10 +102,10 @@ const CATEGORIES = {
   },
   cultura: {
     label: 'Cultura',
-    icon: '♜',
-    badge: 'badge-cultura',
-    color: '#8b5cf6',
-    dotClass: 'culture',
+    icon: '📰',
+    badge: 'badge-neutral',
+    
+    dotClass: 'neutral',
     keywords: [
       'cultura', 'cultural', 'arte', 'artista', 'museo', 'teatro',
       'cine', 'libro', 'feria del libro', 'festival', 'concierto',
@@ -119,10 +119,10 @@ const CATEGORIES = {
   },
   'nota-rosa': {
     label: 'Nota Rosa',
-    icon: '♛',
-    badge: 'badge-nota-rosa',
-    color: '#ec4899',
-    dotClass: 'pink',
+    icon: '📰',
+    badge: 'badge-neutral',
+    
+    dotClass: 'neutral',
     keywords: [
       'gala', 'vestido', 'moda', 'estilo', 'look', 'fashion',
       'familia', 'personal', 'vida privada', 'pareja', 'esposo',
@@ -170,8 +170,8 @@ const THREAT_LEVELS = {
     level: 0,
     name: 'Verde',
     codename: 'APERTURA',
-    protocolName: 'Operaci�n Normal',
-    icon: '♟',
+    protocolName: 'Operaci�n Normal',
+    icon: '📰',
     label: '♟ OPERACIÓN NORMAL',
     codeLabel: 'CÓDIGO VERDE',
     codeClass: 'code-green',
@@ -181,9 +181,9 @@ const THREAT_LEVELS = {
                'ceremonia', 'beca rita cetina', 'beca gertrudis', 'nueva escuela mexicana'],
     triggerLabels: ['Boletines', 'Becas', 'Eventos', 'Inauguraciones', 'Programas sociales'],
     actions: [
-      { icon: '📢', text: 'Difundir información positiva en canales oficiales', priority: 'Normal', priorityClass: 'priority-normal' },
-      { icon: '📱', text: 'Amplificar cobertura en redes sociales', priority: 'Normal', priorityClass: 'priority-normal' },
-      { icon: '📊', text: 'Mantener posicionamiento estratégico', priority: 'Normal', priorityClass: 'priority-normal' }
+      { icon: '📰', text: 'Difundir información positiva en canales oficiales', priority: 'Normal', priorityClass: 'priority-normal' },
+      { icon: '📰', text: 'Amplificar cobertura en redes sociales', priority: 'Normal', priorityClass: 'priority-normal' },
+      { icon: '📰', text: 'Mantener posicionamiento estratégico', priority: 'Normal', priorityClass: 'priority-normal' }
     ]
   },
   yellow: {
@@ -191,7 +191,7 @@ const THREAT_LEVELS = {
     name: 'Amarillo',
     codename: 'DEFENSA SICILIANA',
     protocolName: 'Protocolo Defensa Siciliana',
-    icon: '♞',
+    icon: '📰',
     label: '♞ ALERTA PREVENTIVA',
     codeLabel: 'CÓDIGO AMARILLO',
     codeClass: 'code-yellow',
@@ -202,11 +202,11 @@ const THREAT_LEVELS = {
                'conflicto laboral', 'queja magisterial', 'rechazo', 'exigen'],
     triggerLabels: ['Manifestaciones', 'Demandas sindicales', 'Paros', 'Plantones', 'Bloqueos'],
     actions: [
-      { icon: '🛡️', text: 'Activar monitoreo intensificado cada 30 minutos', priority: 'Alta', priorityClass: 'priority-high' },
-      { icon: '📝', text: 'Preparar comunicado preventivo / postura institucional', priority: 'Alta', priorityClass: 'priority-high' },
-      { icon: '📞', text: 'Contactar líderes sindicales y mediadores', priority: 'Alta', priorityClass: 'priority-high' },
-      { icon: '📊', text: 'Evaluar impacto mediático y dimensionar alcance', priority: 'Media', priorityClass: 'priority-normal' },
-      { icon: '🗂️', text: 'Documentar cronología del evento para respaldo', priority: 'Media', priorityClass: 'priority-normal' }
+      { icon: '📰', text: 'Activar monitoreo intensificado cada 30 minutos', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📰', text: 'Preparar comunicado preventivo / postura institucional', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📰', text: 'Contactar líderes sindicales y mediadores', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📰', text: 'Evaluar impacto mediático y dimensionar alcance', priority: 'Media', priorityClass: 'priority-normal' },
+      { icon: '📰', text: 'Documentar cronología del evento para respaldo', priority: 'Media', priorityClass: 'priority-normal' }
     ]
   },
   red: {
@@ -214,7 +214,7 @@ const THREAT_LEVELS = {
     name: 'Rojo',
     codename: 'GAMBITO DE REY',
     protocolName: 'Protocolo Gambito de Rey',
-    icon: '♚',
+    icon: '📰',
     label: '♚ CRISIS ACTIVA',
     codeLabel: 'CÓDIGO ROJO',
     codeClass: 'code-red',
@@ -229,12 +229,12 @@ const THREAT_LEVELS = {
                'operativo', 'fuerzas armadas', 'guardia nacional', 'crimen organizado'],
     triggerLabels: ['Fallecimientos', 'Violencia', 'Acusaciones', 'Crisis escolares', 'Atentados'],
     actions: [
-      { icon: '🚨', text: 'COMUNICADO OFICIAL URGENTE — Redactar y publicar en <30 min', priority: 'Crítica', priorityClass: 'priority-critical' },
-      { icon: '🏛️', text: 'Activar gabinete de crisis con Secretaria y equipo jurídico', priority: 'Crítica', priorityClass: 'priority-critical' },
-      { icon: '📡', text: 'Contacto inmediato con medios clave de Michoacán', priority: 'Crítica', priorityClass: 'priority-critical' },
-      { icon: '🎯', text: 'Posicionamiento inmediato en redes sociales oficiales', priority: 'Alta', priorityClass: 'priority-high' },
-      { icon: '🛡️', text: 'Contención de daños — Monitorear réplicas y narrativa', priority: 'Alta', priorityClass: 'priority-high' },
-      { icon: '📋', text: 'Informe ejecutivo a gobernadora en máximo 1 hora', priority: 'Alta', priorityClass: 'priority-high' }
+      { icon: '📰', text: 'COMUNICADO OFICIAL URGENTE — Redactar y publicar en <30 min', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '📰', text: 'Activar gabinete de crisis con Secretaria y equipo jurídico', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '📰', text: 'Contacto inmediato con medios clave de Michoacán', priority: 'Crítica', priorityClass: 'priority-critical' },
+      { icon: '📰', text: 'Posicionamiento inmediato en redes sociales oficiales', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📰', text: 'Contención de daños — Monitorear réplicas y narrativa', priority: 'Alta', priorityClass: 'priority-high' },
+      { icon: '📰', text: 'Informe ejecutivo a gobernadora en máximo 1 hora', priority: 'Alta', priorityClass: 'priority-high' }
     ]
   }
 };
@@ -421,7 +421,7 @@ function extractSourceFromUrl(url) {
       isMichoacan: isMichoacan
     };
   } catch {
-    return { name: 'Fuente', icon: 'FT', domain: '', isMichoacan: false };
+    return { name: 'Fuente', icon: '📰', domain: '', isMichoacan: false };
   }
 }
 
@@ -934,11 +934,11 @@ function generateTrendingFromNews() {
 
 const PLATFORMS = [
   { name: 'Prensa Digital', icon: '📰', metrics: {} },
-  { name: 'Redes Sociales', icon: '📱', metrics: {} },
-  { name: 'Televisión', icon: '📺', metrics: {} },
-  { name: 'Radio', icon: '📻', metrics: {} },
-  { name: 'Portales Gobierno', icon: '🏛️', metrics: {} },
-  { name: 'Blogs y Opinión', icon: '✍️', metrics: {} }
+  { name: 'Redes Sociales', icon: '📰', metrics: {} },
+  { name: 'Televisión', icon: '📰', metrics: {} },
+  { name: 'Radio', icon: '📰', metrics: {} },
+  { name: 'Portales Gobierno', icon: '📰', metrics: {} },
+  { name: 'Blogs y Opinión', icon: '📰', metrics: {} }
 ];
 
 function updatePlatformMetrics() {
@@ -1825,12 +1825,12 @@ document.getElementById('modalOverlay').addEventListener('click', (e) => {
 
 function detectDevice() {
   const ua = navigator.userAgent;
-  let device = { type: 'PC', name: 'Escritorio (PC)', icon: '💻' };
+  let device = { type: 'PC', name: 'Escritorio (PC)', icon: '📰' };
   
   if (/Android/i.test(ua)) {
-    device = { type: 'Android', name: 'Android OS', icon: '🤖' };
+    device = { type: 'Android', name: 'Android OS', icon: '📰' };
   } else if (/iPhone|iPad|iPod/i.test(ua)) {
-    device = { type: 'iOS', name: 'Apple iOS', icon: '🍎' };
+    device = { type: 'iOS', name: 'Apple iOS', icon: '📰' };
   }
   
   // Update sidebar device value
