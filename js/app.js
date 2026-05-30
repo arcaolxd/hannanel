@@ -9,10 +9,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const CONFIG = {
-  // ══ CLOUDFLARE WORKER (Backend real) ══
-  // Después de desplegar el Worker, pega tu URL aquí:
-  // Ejemplo: 'https://hannanel-news-worker.TU-USUARIO.workers.dev'
-  workerUrl: null,
+  // ══ FIREBASE BACKEND (API en vivo) ══
+  // Después de desplegar a Firebase, pega aquí la URL de tu función "api":
+  // Ejemplo: 'https://api-xxxxxxxx-uc.a.run.app'
+  firebaseApiUrl: null,
 
   // Queries de búsqueda para Google News RSS (fallback si no hay Worker)
   searchQueries: [
@@ -566,9 +566,11 @@ async function tryFetchLiveNews() {
   let successCount = 0;
 
   try {
-    if (CONFIG.workerUrl) {
-      // 1. BACKEND REAL: Llamada al Cloudflare Worker
-      const response = await fetch(`${CONFIG.workerUrl}/api/news`);
+    if (CONFIG.firebaseApiUrl) {
+      // 1. BACKEND REAL: Llamada a la API de Firebase
+      // Limpiamos la URL por si el usuario incluyó barras al final
+      const baseUrl = CONFIG.firebaseApiUrl.replace(/\/$/, '');
+      const response = await fetch(`${baseUrl}`);
       if (response.ok) {
         const data = await response.json();
         if (data.status === 'ok' && data.articles) {
