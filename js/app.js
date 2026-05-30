@@ -1867,7 +1867,7 @@ function detectDevice() {
 
 function initialize() {
   // 1. Cargar noticias reales pre-investigadas INMEDIATAMENTE (sin async)
-  loadFallbackRealNews();
+  // loadFallbackRealNews();
 
   // 2. Renderizar todo al instante
   updatePlatformMetrics();
