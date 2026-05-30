@@ -170,7 +170,7 @@ const THREAT_LEVELS = {
     level: 0,
     name: 'Verde',
     codename: 'APERTURA',
-    protocolName: 'Protocolo de Apertura',
+    protocolName: 'Operaci�n Normal',
     icon: '♟',
     label: '♟ OPERACIÓN NORMAL',
     codeLabel: 'CÓDIGO VERDE',
