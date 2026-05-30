@@ -2088,3 +2088,68 @@ document.head.appendChild(style);
 
 // Boot
 document.addEventListener('DOMContentLoaded', initialize);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INYECCIÓN MANUAL DE NOTICIAS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function openInjectionModal() {
+  const modal = document.getElementById('injectModalOverlay');
+  if(modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeInjectionModal() {
+  const modal = document.getElementById('injectModalOverlay');
+  if(modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+async function submitInjection(e) {
+  e.preventDefault();
+  const btn = document.getElementById('injectSubmitBtn');
+  const originalText = btn.textContent;
+  btn.textContent = 'Inyectando...';
+  btn.disabled = true;
+
+  const payload = {
+    title: document.getElementById('injectTitle').value,
+    link: document.getElementById('injectLink').value,
+    source: document.getElementById('injectSource').value,
+    description: document.getElementById('injectDesc').value,
+    query: 'INYECCIÓN MANUAL'
+  };
+
+  try {
+    const response = await fetch(CONFIG.firebaseApiUrl.replace('/api', '/injectNews'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if(!response.ok) throw new Error('Error al inyectar');
+
+    showToast('Inyección Exitosa', 'La nota ha sido ingresada al sistema.', 'success');
+    closeInjectionModal();
+    document.getElementById('injectForm').reset();
+    
+    // Refresh to show the new data and trigger Semáforo
+    await fetchNews();
+    
+  } catch(error) {
+    console.error(error);
+    showToast('Error', 'No se pudo inyectar la nota.', 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+// Close modal on outside click
+document.getElementById('injectModalOverlay')?.addEventListener('click', (e) => {
+  if (e.target.id === 'injectModalOverlay') closeInjectionModal();
+});

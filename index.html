@@ -147,6 +147,9 @@
           <button class="header-export-btn" id="downloadTxtBtn" onclick="exportTxtReport()" title="Exportar Corte Informativo en TXT">
             📄 Exportar Corte
           </button>
+          <button class="header-inject-btn" onclick="openInjectionModal()" title="Inyectar Nota Manual (Facebook, X, etc)">
+            ➕ Inyectar Nota
+          </button>
           <button class="header-btn" id="refreshBtn" onclick="refreshData()" title="Actualizar datos">🔄</button>
           <button class="header-btn" onclick="toggleNotifications()" title="Notificaciones">
             🔔
@@ -359,6 +362,37 @@
 
       </div>
     </main>
+  </div>
+
+  <!-- Modal de Inyección Manual -->
+  <div class="modal-overlay" id="injectModalOverlay">
+    <div class="modal" id="injectModalContent" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>➕ Inyectar Nota Manual</h3>
+        <button class="modal-close" onclick="closeInjectionModal()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="injectForm" onsubmit="submitInjection(event)">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Título de la Nota *</label>
+            <input type="text" id="injectTitle" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); color: white; border-radius: 4px;" placeholder="Ej. Maestro asesinado en Aquila...">
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Enlace (URL) *</label>
+            <input type="url" id="injectLink" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); color: white; border-radius: 4px;" placeholder="https://facebook.com/...">
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Fuente *</label>
+            <input type="text" id="injectSource" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); color: white; border-radius: 4px;" placeholder="Ej. Facebook, Medio Local, X">
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Extracto / Texto del Post (Opcional pero recomendado para el Semáforo)</label>
+            <textarea id="injectDesc" rows="4" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); color: white; border-radius: 4px; resize: vertical;" placeholder="Copia y pega aquí el texto completo de la publicación..."></textarea>
+          </div>
+          <button type="submit" id="injectSubmitBtn" style="width: 100%; padding: 12px; background: var(--accent-primary); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s;">Inyectar al Sistema</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script src="js/app.js"></script>

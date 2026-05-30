@@ -2402,3 +2402,33 @@ body.alert-red .semaforo-section {
   background: rgba(0, 255, 65, 0.1);
   border-color: var(--accent-primary);
 }
+
+/* Injection Button */
+.header-inject-btn {
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  color: #fb923c;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-inject-btn:hover {
+  background: rgba(249, 115, 22, 0.3);
+  border-color: #f97316;
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+/* Injection Modal specific styles */
+#injectModalOverlay.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}

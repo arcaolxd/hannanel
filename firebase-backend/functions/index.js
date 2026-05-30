@@ -266,3 +266,71 @@ exports.api = onRequest((req, res) => {
     }
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HTTP API: Inyectar noticia manualmente (Facebook, Twitter, etc.)
+// ═══════════════════════════════════════════════════════════════════════════
+
+exports.injectNews = onRequest((req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== "POST") {
+      res.status(405).send("Method Not Allowed");
+      return;
+    }
+
+    try {
+      const { title, link, source, description, query } = req.body;
+
+      if (!title || !link || !source) {
+        res.status(400).json({ status: "error", message: "Faltan campos obligatorios: title, link, source" });
+        return;
+      }
+
+      const newsRef = db.collection('cache').doc('news_data');
+      const doc = await newsRef.get();
+      
+      let articles = [];
+      let meta = { lastFetch: new Date().toISOString() };
+      if (doc.exists) {
+        const data = doc.data();
+        articles = data.articles || [];
+        meta = data.meta || meta;
+      }
+
+      // Crear objeto de noticia manual
+      const manualArticle = {
+        title: title.trim(),
+        link: link.trim(),
+        googleLink: link.trim(),
+        pubDate: new Date().toUTCString(),
+        timestamp: Date.now(),
+        description: (description || "").substring(0, 500),
+        source: source.trim(),
+        sourceUrl: '',
+        query: query || "INYECCIÓN MANUAL",
+        fetchedAt: Date.now(),
+      };
+
+      // Insertar al inicio de la lista
+      articles.unshift(manualArticle);
+      
+      // Asegurar límite máximo
+      if (articles.length > MAX_ARTICLES) {
+        articles = articles.slice(0, MAX_ARTICLES);
+      }
+
+      meta.totalStored = articles.length;
+
+      await newsRef.set({
+        articles: articles,
+        meta: meta
+      });
+
+      logger.info(`Noticia inyectada manualmente: ${manualArticle.title}`);
+      res.json({ status: "ok", message: "Noticia inyectada con éxito", article: manualArticle });
+    } catch (e) {
+      logger.error("Error inyectando noticia", e);
+      res.status(500).json({ status: "error", message: e.message });
+    }
+  });
+});
