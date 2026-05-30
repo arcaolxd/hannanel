@@ -46,7 +46,7 @@ const CONFIG = {
 const CATEGORIES = {
   politica: {
     label: 'Política',
-    icon: '📰',
+    icon: '♝',
     badge: 'badge-neutral',
     
     dotClass: 'neutral',
@@ -64,7 +64,7 @@ const CATEGORIES = {
   },
   educacion: {
     label: 'Educación',
-    icon: '📰',
+    icon: '♙',
     badge: 'badge-neutral',
     
     dotClass: 'neutral',
@@ -84,7 +84,7 @@ const CATEGORIES = {
   },
   mediatica: {
     label: 'Mediática',
-    icon: '📰',
+    icon: '♞',
     badge: 'badge-neutral',
     
     dotClass: 'neutral',
@@ -102,7 +102,7 @@ const CATEGORIES = {
   },
   cultura: {
     label: 'Cultura',
-    icon: '📰',
+    icon: '♜',
     badge: 'badge-neutral',
     
     dotClass: 'neutral',
@@ -119,7 +119,7 @@ const CATEGORIES = {
   },
   'nota-rosa': {
     label: 'Nota Rosa',
-    icon: '📰',
+    icon: '♛',
     badge: 'badge-neutral',
     
     dotClass: 'neutral',
@@ -212,8 +212,8 @@ const THREAT_LEVELS = {
   red: {
     level: 2,
     name: 'Rojo',
-    codename: 'GAMBITO DE REY',
-    protocolName: 'Protocolo Gambito de Rey',
+    codename: 'CRISIS ACTIVA',
+    protocolName: 'Operación de Crisis',
     icon: '📰',
     label: '♚ CRISIS ACTIVA',
     codeLabel: 'CÓDIGO ROJO',
@@ -1532,9 +1532,9 @@ function updateAll() {
 function addActivity(newsItem) {
   const catInfo = CATEGORIES[newsItem.category];
   const actions = [
-    `realizó un movimiento táctico: "${newsItem.title.substring(0, 55)}..."`,
-    `posicionó una jugada en el flanco de ${catInfo.label}: "${newsItem.title.substring(0, 45)}..."`,
-    `avanzó ficha en el tablero estratégico de ${catInfo.label}`
+    `publicó una nota relevante: "${newsItem.title.substring(0, 55)}..."`,
+    `generó una noticia clasificada en ${catInfo.label}: "${newsItem.title.substring(0, 45)}..."`,
+    `mención importante en la categoría de ${catInfo.label}`
   ];
 
   state.activityIdCounter++;
@@ -1944,13 +1944,13 @@ function exportTxtReport() {
   const dateStr = `${now.getDate()} DE ${months[now.getMonth()]} DE ${now.getFullYear()}`;
 
   // 3. Ensamblar Texto
-  let textOut = `♛ HANNANEL PRO — CORTE TÁCTICO DE MEDIOS (MEDIA BOARD)
+  let textOut = `♛ HANNANEL PRO — CORTE DE MEDIOS
 
 ///  ÍNDICE ESTRATÉGICO:  
   
-1.	FOCOS ROJOS [JUGADAS DE OPOSICIÓN / AMENAZAS]
+1.	FOCOS ROJOS [NOTAS NEGATIVAS / AMENAZAS]
 2.	TEMAS QUE INVOLUCRAN A LA SEE [POSICIONES CONSOLIDADAS]
-3.	TEMAS EDUCATIVOS (GENERAL) [DESARROLLO DEL TABLERO]
+3.	TEMAS EDUCATIVOS (GENERAL) [NOTAS INFORMATIVAS]
 4.	BOLETINES E INFORMACIÓN EMANADA DEL EQUIPO [MOVIMIENTOS DE APERTURA]
 
   
@@ -1990,7 +1990,7 @@ ________________________________________
 `;
 
   // ── Sección 1. FOCOS ROJOS ──
-  textOut += `1. 🔴 FOCOS ROJOS [JUGADAS DE OPOSICIÓN / AMENAZAS]\n`;
+  textOut += `1. 🔴 FOCOS ROJOS [NOTAS NEGATIVAS / AMENAZAS]\n`;
   if (focosRojos.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -2026,7 +2026,7 @@ ________________________________________
   textOut += `________________________________________\n`;
 
   // ── Sección 3. TEMAS EDUCATIVOS (GENERAL) ──
-  textOut += `3.  TEMAS EDUCATIVOS (GENERAL) [DESARROLLO DEL TABLERO]\n`;
+  textOut += `3.  TEMAS EDUCATIVOS (GENERAL) [NOTAS INFORMATIVAS]\n`;
   if (temasEducativos.length === 0) {
     textOut += `Sin registros detectados en este corte.\n`;
   } else {
@@ -2075,7 +2075,7 @@ ________________________________________
     link.click();
     document.body.removeChild(link);
     
-    showToast('📥 Descarga completa', `Corte táctico exportado con ${newsList.length} jugadas`, 'success');
+    showToast('📥 Descarga completa', `Corte táctico exportado con ${newsList.length} notas`, 'success');
   } catch (err) {
     showToast('⚠️ Error', 'No se pudo generar el archivo de descarga.', 'warning');
   }
