@@ -75,7 +75,7 @@
         </div>
 
         <div class="nav-section">
-          <div class="nav-section-title">Fichas del Tablero</div>
+          <div class="nav-section-title">Categorías</div>
           <div class="nav-item" data-category="politica" onclick="filterByCategory('politica')">
             <span class="icon">♝</span>
             <span>Política</span>
@@ -164,169 +164,22 @@
           <div class="ticker-content" id="tickerContent"></div>
         </div>
 
-        <!-- ══ Stats Grid ══ -->
-        <div class="stats-grid" id="statsGrid">
-          <div class="stat-card purple">
-            <div class="stat-card-header">
-              <div class="stat-icon">📰</div>
-              <div class="stat-trend up" id="trendTotal">↑ +12%</div>
-            </div>
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label">Menciones Totales (24h)</div>
-            <div class="stat-sparkline">
-              <div class="mini-chart" id="sparkTotal"></div>
-            </div>
-          </div>
-          <div class="stat-card cyan">
-            <div class="stat-card-header">
-              <div class="stat-icon">📊</div>
-              <div class="stat-trend up" id="trendPositive">↑ +8%</div>
-            </div>
-            <div class="stat-value" id="statPositive">0</div>
-            <div class="stat-label">Sentimiento Positivo</div>
-            <div class="stat-sparkline">
-              <div class="mini-chart chart-cyan" id="sparkPositive"></div>
-            </div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-card-header">
-              <div class="stat-icon">🌐</div>
-              <div class="stat-trend up" id="trendSources">↑ +5%</div>
-            </div>
-            <div class="stat-value" id="statSources">0</div>
-            <div class="stat-label">Fuentes Activas</div>
-            <div class="stat-sparkline">
-              <div class="mini-chart chart-green" id="sparkSources"></div>
-            </div>
-          </div>
-          <div class="stat-card pink">
-            <div class="stat-card-header">
-              <div class="stat-icon">🔥</div>
-              <div class="stat-trend up" id="trendEngagement">↑ +23%</div>
-            </div>
-            <div class="stat-value" id="statEngagement">0</div>
-            <div class="stat-label">Engagement Score</div>
-            <div class="stat-sparkline">
-              <div class="mini-chart chart-pink" id="sparkEngagement"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══ SEMÁFORO TÁCTICO ══ -->
-        <div class="semaforo-section" id="semaforoSection">
-          <div class="section-header">
-            <div>
-              <div class="section-title">🚦 Semáforo <span class="highlight">Táctico</span></div>
-              <div class="section-subtitle">Sistema de alerta temprana — Clasificación de amenazas en tiempo real</div>
-            </div>
+        <!-- ══ COMPACT SEMÁFORO TÁCTICO ══ -->
+        <div class="semaforo-compact" id="semaforoSection">
+          <div class="semaforo-compact-header">
+            <span class="semaforo-compact-title">🚦 ESTADO TÁCTICO:</span>
             <span class="semaforo-level-label level-green" id="semaforoLevelBadge">♟ OPERACIÓN NORMAL</span>
-          </div>
-          <div class="semaforo-grid">
-            <!-- Traffic Light Tower -->
-            <div class="semaforo-tower">
-              <div class="semaforo-tower-title">Nivel de Amenaza</div>
-              <div class="semaforo-lights">
-                <div class="semaforo-light green inactive" id="lightGreen" title="Verde — Operación Normal">🟢</div>
-                <div class="semaforo-light yellow inactive" id="lightYellow" title="Amarillo — Alerta Preventiva">🟡</div>
-                <div class="semaforo-light red inactive" id="lightRed" title="Rojo — Crisis Activa">🔴</div>
-              </div>
-              <div class="semaforo-level-label level-green" id="semaforoLevelText">VERDE — APERTURA</div>
-              <div class="semaforo-timestamp" id="semaforoTime">Último escaneo: --:--:--</div>
+            <div class="semaforo-compact-lights">
+              <div class="semaforo-light green active" id="lightGreen">🟢</div>
+              <div class="semaforo-light yellow inactive" id="lightYellow">🟡</div>
+              <div class="semaforo-light red inactive" id="lightRed">🔴</div>
             </div>
-
-            <!-- Protocol Panel -->
-            <div class="protocol-panel level-green" id="protocolPanel">
-              <div class="protocol-header">
-                <div class="protocol-title">
-                  <span class="protocol-icon" id="protocolIcon">♟</span>
-                  <span id="protocolName">Protocolo de Apertura</span>
-                </div>
-                <span class="protocol-codename code-green" id="protocolCode">CÓDIGO VERDE</span>
-              </div>
-              <div class="protocol-body" id="protocolBody">
-                <!-- Triggers -->
-                <div class="protocol-triggers">
-                  <div class="protocol-triggers-title">Activadores Detectados</div>
-                  <div class="trigger-tags" id="triggerTags">
-                    <span class="trigger-tag matched-green">Boletines</span>
-                    <span class="trigger-tag">Becas</span>
-                    <span class="trigger-tag">Eventos</span>
-                  </div>
-                </div>
-
-                <!-- Protocol Actions -->
-                <div class="protocol-actions" id="protocolActions">
-                  <div class="protocol-actions-title">♞ Movimientos Recomendados</div>
-                  <div class="protocol-action">
-                    <span class="action-icon">📢</span>
-                    Difundir información positiva en canales oficiales
-                    <span class="action-priority priority-normal">Normal</span>
-                  </div>
-                  <div class="protocol-action">
-                    <span class="action-icon">📱</span>
-                    Amplificar cobertura en redes sociales
-                    <span class="action-priority priority-normal">Normal</span>
-                  </div>
-                  <div class="protocol-action">
-                    <span class="action-icon">📊</span>
-                    Mantener posicionamiento estratégico
-                    <span class="action-priority priority-normal">Normal</span>
-                  </div>
-                </div>
-
-                <!-- Detected Threats (populated by JS) -->
-                <div class="detected-threats" id="detectedThreats" style="display: none;">
-                  <div class="detected-threats-title">
-                    <span class="live-dot" style="background: #f87171; width: 6px; height: 6px;"></span>
-                    Amenazas Detectadas en Tiempo Real
-                  </div>
-                  <div id="threatsList"></div>
-                </div>
-              </div>
-            </div>
+            <span class="semaforo-timestamp" id="semaforoTime" style="margin-left: auto;">Último escaneo: --:--:--</span>
           </div>
-        </div>
-
-        <!-- ══ Monitor Section ══ -->
-        <div class="monitor-section">
-          <div class="section-header">
-            <div>
-              <div class="section-title">🛰️ Monitoreo <span class="highlight">en Tiempo Real</span></div>
-              <div class="section-subtitle">Rastreo activo en plataformas principales</div>
-            </div>
-          </div>
-          <div class="monitor-grid" id="monitorGrid">
-            <!-- Generated by JS -->
-          </div>
-        </div>
-
-        <!-- ══ Category Coverage ══ -->
-        <div class="section-header">
-          <div>
-            <div class="section-title">📂 Cobertura por <span class="highlight">Ficha / Rol</span></div>
-            <div class="section-subtitle">Distribución de noticias sobre Gaby Molina en el Tablero</div>
-          </div>
-        </div>
-        <div class="coverage-grid" id="coverageGrid">
-          <div class="coverage-item">
-            <div class="coverage-value" id="covPolitica">0</div>
-            <div class="coverage-label">♝ Política</div>
-          </div>
-          <div class="coverage-item">
-            <div class="coverage-value" id="covMediatica">0</div>
-            <div class="coverage-label">♞ Mediática</div>
-          </div>
-          <div class="coverage-item">
-            <div class="coverage-value" id="covCultura">0</div>
-            <div class="coverage-label">♜ Cultura</div>
-          </div>
-          <div class="coverage-item">
-            <div class="coverage-value" id="covNotaRosa">0</div>
-            <div class="coverage-label">♛ Nota Rosa</div>
-          </div>
-          <div class="coverage-item">
-            <div class="coverage-value" id="covEducacion">0</div>
-            <div class="coverage-label">♙ Peón / Educación</div>
+          
+          <div class="semaforo-compact-body" id="protocolPanel" style="display: none;">
+            <div class="trigger-tags" id="triggerTags" style="margin-bottom: 8px;"></div>
+            <div id="threatsList" style="font-size: 13px;"></div>
           </div>
         </div>
 
@@ -334,18 +187,18 @@
         <div style="margin-top: 28px;">
           <div class="section-header">
             <div>
-              <div class="section-title">📰 Feed de <span class="highlight">Noticias / Jugadas</span></div>
+              <div class="section-title">📰 Feed de <span class="highlight">Noticias</span></div>
               <div class="section-subtitle">Últimas noticias sobre Gaby Molina clasificadas por categoría táctica</div>
             </div>
           </div>
 
           <div class="category-tabs" id="categoryTabs">
-            <button class="category-tab active" data-filter="all" onclick="filterNews('all')">
-              🔥 Todo el Tablero
+            <div class="feed-filters">
+              <button class="filter-btn active" onclick="setFilter('all')">Todas</button>
               <span class="tab-count" id="tabAll">0</span>
-            </button>
+            </div>
             <button class="category-tab" data-filter="politica" onclick="filterNews('politica')">
-              ♝ Política
+              Política
               <span class="tab-count" id="tabPolitica">0</span>
             </button>
             <button class="category-tab" data-filter="mediatica" onclick="filterNews('mediatica')">

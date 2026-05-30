@@ -2277,3 +2277,128 @@ body.alert-red .semaforo-section {
 .mono-text {
   font-family: 'Share Tech Mono', monospace;
 }
+
+/* ── MODULAR REDESIGN ───────────────────────────────────────────────────── */
+
+/* Compact Semáforo */
+.semaforo-compact {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.semaforo-compact-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-glass);
+  gap: 16px;
+}
+
+.semaforo-compact-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.semaforo-compact-lights {
+  display: flex;
+  gap: 8px;
+}
+
+.semaforo-compact-lights .semaforo-light {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.semaforo-compact-lights .semaforo-light.inactive {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+.semaforo-compact-body {
+  padding: 16px 20px;
+  background: rgba(255, 0, 51, 0.05);
+  border-top: 1px solid rgba(255, 0, 51, 0.2);
+}
+
+/* Enhanced Feed Item (Modular & Readable) */
+.feed-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.feed-item:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-glass-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.feed-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.feed-meta {
+  display: flex;
+  gap: 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 12px;
+}
+
+.feed-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.feed-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.feed-action-btn {
+  padding: 8px 16px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  color: var(--accent-primary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.feed-action-btn:hover {
+  background: rgba(0, 255, 65, 0.1);
+  border-color: var(--accent-primary);
+}

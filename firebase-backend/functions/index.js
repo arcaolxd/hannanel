@@ -151,14 +151,15 @@ async function processNewsUpdate() {
   let successCount = 0;
   let errorCount = 0;
 
-  for (const query of SEARCH_QUERIES) {
-    try {
-      const items = await fetchRSS(query);
-      if (items.length > 0) {
-        allArticles.push(...items);
-        successCount++;
-      }
-    } catch {
+  // Hacer peticiones en paralelo para evitar timeout
+  const fetchPromises = SEARCH_QUERIES.map(query => fetchRSS(query));
+  const results = await Promise.allSettled(fetchPromises);
+
+  for (const result of results) {
+    if (result.status === 'fulfilled' && result.value.length > 0) {
+      allArticles.push(...result.value);
+      successCount++;
+    } else {
       errorCount++;
     }
   }
@@ -193,16 +194,28 @@ async function processNewsUpdate() {
   return meta;
 }
 
+// Opciones globales para dar más tiempo (5 minutos de timeout y 1GB memoria)
+const runtimeOpts = { timeoutSeconds: 300, memory: '1GiB' };
+
 // Se ejecuta cada 5 minutos
-exports.fetchNewsCron = onSchedule("every 5 minutes", async (event) => {
+exports.fetchNewsCron = onSchedule({
+  schedule: "every 5 minutes",
+  timeoutSeconds: 300,
+  memory: '1GiB'
+}, async (event) => {
   await processNewsUpdate();
 });
 
-// Endpoint para invocar el cron manualmente (útil para pruebas iniciales)
-exports.manualFetch = onRequest(async (req, res) => {
+// Endpoint para invocar el cron manualmente
+exports.manualFetch = onRequest(runtimeOpts, async (req, res) => {
   cors(req, res, async () => {
-    const result = await processNewsUpdate();
-    res.json({ status: "ok", ...result });
+    try {
+      const result = await processNewsUpdate();
+      res.json({ status: "ok", ...result });
+    } catch (e) {
+      logger.error("Error en manualFetch", e);
+      res.status(500).json({ status: "error", message: e.message });
+    }
   });
 });
 
