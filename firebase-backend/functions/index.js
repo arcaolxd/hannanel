@@ -23,10 +23,14 @@ const SEARCH_QUERIES = [
   // Institucional
   '"Secretaría de Educación" Michoacán',
   '"SEE Michoacán"',
-  // Contexto educativo Michoacán
-  'maestros Michoacán atentado OR violencia OR agresión',
-  'educación Michoacán crisis OR protesta OR paro',
+  // Contexto educativo Michoacán (Crisis y Sindicatos)
+  'maestros Michoacán atentado OR violencia OR agresión OR asesinado',
+  'educación Michoacán crisis OR protesta OR paro OR toma',
   'escuelas Michoacán inseguridad OR cierre',
+  '"CNTE Michoacán"',
+  '"SNTE Michoacán"',
+  '"Normalistas Tiripetío"',
+  '"normalistas Michoacán" bloqueo OR retención',
 ];
 
 const GOOGLE_NEWS_RSS = 'https://news.google.com/rss/search';
