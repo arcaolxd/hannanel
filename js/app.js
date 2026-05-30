@@ -12,7 +12,7 @@ const CONFIG = {
   // ══ FIREBASE BACKEND (API en vivo) ══
   // Después de desplegar a Firebase, pega aquí la URL de tu función "api":
   // Ejemplo: 'https://api-xxxxxxxx-uc.a.run.app'
-  firebaseApiUrl: null,
+  firebaseApiUrl: 'https://us-central1-hannaneel.cloudfunctions.net/api',
 
   // Queries de búsqueda para Google News RSS (fallback si no hay Worker)
   searchQueries: [
